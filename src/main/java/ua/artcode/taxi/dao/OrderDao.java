@@ -11,9 +11,9 @@ public interface OrderDao {
     Order create(Order order);
     Collection<Order> getAllOrders();
     Order update(Order newOrder);
-    Order delete(long id);
+    Order delete(Long id);
 
-    Order findById(long id);
+    Order findById(Long id);
     List<Order> getOrdersByStatus(OrderStatus status);
-    Order getLastOrderOfUser(int userId);
+    Order getLastOrderOfUser(Long userId);
 }

@@ -3,7 +3,7 @@ package ua.artcode.taxi.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "addresses")
+@Table(name = "address")
 public class Address {
 
     @Id
@@ -60,6 +60,8 @@ public class Address {
         }
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
         return id;
     }

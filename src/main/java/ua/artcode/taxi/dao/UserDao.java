@@ -12,10 +12,10 @@ public interface UserDao {
     User createUser(User user);
     Collection<User> getAllUsers();
     User updateUser(User newUser);
-    User deleteUser(int id);
+    User deleteUser(Long id);
 
     User findByPhone(String phone);
-    User findById(int id);
-    List<Order> getOrdersOfUser(int userId, int from, int to);
-    int getQuantityOrdersOfUser(int userId);
+    User findById(Long id);
+    List<Order> getOrdersOfUser(Long userId, int from, int to);
+    int getQuantityOrdersOfUser(Long userId);
 }

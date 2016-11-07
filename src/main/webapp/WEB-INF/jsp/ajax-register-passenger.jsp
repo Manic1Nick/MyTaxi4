@@ -18,7 +18,7 @@
 
             var confObj = {
                 type:"POST",
-                url: "/${APP_NAME}/register-passenger",
+                url: "register-passenger",
                 data: {
                     phone : phone,
                     password : password,
@@ -27,14 +27,6 @@
                     city : city,
                     street : street,
                     houseNum : houseNum
-                },
-                success: function(resp){
-                    if (resp == "SUCCESS") {
-                        alert("Congratulations!\nYou are registered successful!\nWelcome to MyTaxi! :)");
-                        window.location = "/${APP_NAME}/user-info";
-                    } else {
-                        alert(resp);
-                    }
                 },
                 error: function(resp){
                     alert(resp);
@@ -56,7 +48,7 @@
 
             var confObj = {
                 type:"POST",
-                url: "/${APP_NAME}/register-passenger",
+                url: "register-passenger",
                 data: {
                     phone : phone,
                     password : password,
@@ -65,14 +57,6 @@
                     city : city,
                     street : street,
                     houseNum : houseNum
-                },
-                success: function(resp){
-                    if (resp == "SUCCESS") {
-                        alert("Your register data was changed");
-                        window.location = "/${APP_NAME}/user-info";
-                    } else {
-                        alert(resp);
-                    }
                 },
                 error: function(resp){
                     alert(resp);
@@ -84,12 +68,12 @@
 
     <script>
         function redirectUserInfo() {
-            window.location = "/${APP_NAME}/user-info";
+            window.location = "user-info";
         }
     </script>
     <script>
         function returnToLogin() {
-            window.location = "/${APP_NAME}/login";
+            window.location = "login";
         }
     </script>
 

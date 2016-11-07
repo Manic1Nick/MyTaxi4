@@ -8,19 +8,19 @@
 
     <script>
         function redirectRegPassenger() {
-            window.location = "/${APP_NAME}/register-passenger";
+            window.location = "register-passenger";
         }
     </script>
 
     <script>
         function redirectRegDriver() {
-            window.location = "/${APP_NAME}/register-driver";
+            window.location = "register-driver";
         }
     </script>
 
     <script>
         function redirectMakeOrder() {
-            window.location = "/${APP_NAME}/order/make";
+            window.location = "order/make";
         }
     </script>
 

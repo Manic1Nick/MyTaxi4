@@ -16,39 +16,16 @@
             var password = $("#passInput").val();
             var confObj = {
                 type:"POST",
-                url: "/${APP_NAME}/login",
+                url: "login",
                 data: {
                     phone : phone,
                     password : password
-                },
-                success: function(resp){
-                    if (resp == "SUCCESS") {
-                        redirectUserInfo();
-                    } else {
-                        alert(resp);
-                    }
                 },
                 error: function(resp){
                     alert(resp);
                 }
             };
             $.ajax(confObj);
-        }
-    </script>
-
-    <script>
-        function redirectUserInfo() {
-            window.location = "/${APP_NAME}/user-info";
-        }
-    </script>
-    <script>
-        function redirectRegPassenger() {
-            window.location = "/${APP_NAME}/register-passenger";
-        }
-    </script>
-    <script>
-        function redirectRegDriver() {
-            window.location = "/${APP_NAME}/register-driver";
         }
     </script>
 
@@ -85,18 +62,23 @@
             <input id="passInput" type="password" onfocus="colorBackground(this)"><br>
         </p>
     </h1>
-    <p>
-        <button onclick="sendLogin()" style="background-color:lightgreen">
-            LOGIN</button>
-    </p>
-    <p>
-        <button onclick="redirectRegPassenger()" style="background-color:lightgrey">
-            REGISTER PASSENGER</button>
-    </p>
-    <p>
-        <button onclick="redirectRegDriver()" style="background-color:lightgrey">
-            REGISTER DRIVER</button>
-    </p>
+    <h2>
+        <p>
+            <button onclick="sendLogin()" style="background-color:limegreen">
+                LOGIN</button>
+        </p>
+    </h2>
+    <h3>
+        <p>
+            <input type="button" value="REGISTER PASSENGER" style="background-color:lightgrey"
+                   onclick="window.location='register-passenger'" />
+        </p>
+        <p>
+            <input type="button" value="REGISTER DRIVER" style="background-color:lightgrey"
+                   onclick="window.location='register-driver'" />
+        </p>
+    </h3>
+
 </div>
 </body>
 </html>

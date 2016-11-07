@@ -1,6 +1,5 @@
 package ua.artcode.taxi.dao;
 
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.artcode.taxi.model.Address;
 import ua.artcode.taxi.model.Order;
@@ -13,7 +12,7 @@ import javax.persistence.Query;
 import java.util.Collection;
 import java.util.List;
 
-@Component(value = "orderDao")
+//@Component(value = "orderDao")
 public class OrderJpaDao implements OrderDao {
 
     @PersistenceContext
@@ -77,7 +76,7 @@ public class OrderJpaDao implements OrderDao {
 
     @Override
     @Transactional
-    public Order delete(long id) {
+    public Order delete(Long id) {
 
         Order delOrder = findById(id);
         manager.remove(delOrder);
@@ -87,7 +86,7 @@ public class OrderJpaDao implements OrderDao {
 
     @Override
     @Transactional
-    public Order findById(long id) {
+    public Order findById(Long id) {
 
         return manager.find(Order.class, id);
     }
@@ -105,7 +104,7 @@ public class OrderJpaDao implements OrderDao {
 
     @Override
     @Transactional
-    public Order getLastOrderOfUser(int userId) {
+    public Order getLastOrderOfUser(Long userId) {
 
         List<Long> orderIds = manager.createQuery(
                 "SELECT MAX(c.id) FROM Order c WHERE c.idPassenger=:userId OR c.idDriver=:userId")

@@ -12,6 +12,14 @@ import java.util.Map;
 
 public interface UserService {
 
+
+    void save(User user);
+
+    User findByUsername(String username);
+    User findByUserphone(String userphone);
+
+    User findById(Long id);
+
     //register
     User registerPassenger(Map<String, String> map) throws RegisterException, InputDataWrongException;
     User registerDriver(Map<String, String> map) throws RegisterException, InputDataWrongException;
@@ -26,14 +34,14 @@ public interface UserService {
                                             OrderMakeException, InputDataWrongException, UnknownHostException;
     Map<String, Object> calculateOrder(String lineFrom, String lineTo) throws
                                             InputDataWrongException, UnknownHostException;
-    Order getOrderInfo(long orderId) throws OrderNotFoundException;
+    Order getOrderInfo(Long orderId) throws OrderNotFoundException;
     Order getLastOrderInfo(String accessToken) throws UserNotFoundException, OrderNotFoundException;
-    Order cancelOrder(long orderId) throws OrderNotFoundException, WrongStatusOrderException;
-    Order closeOrder(String accessToken, long orderId) throws OrderNotFoundException,
+    Order cancelOrder(Long orderId) throws OrderNotFoundException, WrongStatusOrderException;
+    Order closeOrder(String accessToken, Long orderId) throws OrderNotFoundException,
                                     WrongStatusOrderException, DriverOrderActionException;
 
     //actions for driver
-    Order takeOrder(String accessToken, long orderId)
+    Order takeOrder(String accessToken, Long orderId)
             throws OrderNotFoundException, WrongStatusOrderException, DriverOrderActionException;
     Order[] createArrayOrdersForDriver(OrderStatus orderStatus, User driver)
             throws InputDataWrongException;
@@ -46,7 +54,6 @@ public interface UserService {
     User deleteUser(String accessToken) throws WrongStatusOrderException;
     Address getUserLocation();
     Order updateOrder(Order order);
-    List<Order> getOrdersOfUser (int userId, int from, int to);
-    int getQuantityOrdersOfUser (int userId);
-    User findById(int id);
+    List<Order> getOrdersOfUser (Long userId, int from, int to);
+    int getQuantityOrdersOfUser (Long userId);
 }

@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "order")
 @NamedQueries({@NamedQuery(name = "getAllOrders", query = "SELECT c FROM Order c")})
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @Column(name = "time", nullable = false)
     private Date timeCreate;
@@ -37,10 +37,10 @@ public class Order {
     private Address to;
 
     @Column(name = "passenger_id", nullable = false)
-    private int idPassenger;
+    private Long idPassenger;
 
     @Column(name = "driver_id", nullable = false)
-    private int idDriver;
+    private Long idDriver;
 
     @Column(name = "distance", nullable = false)
     private int distance;
@@ -56,7 +56,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(Address from, Address to, int idPassenger, int distance, int price, String message) {
+    public Order(Address from, Address to, Long idPassenger, int distance, int price, String message) {
         this.from = from;
         this.to = to;
         this.idPassenger = idPassenger;
@@ -134,19 +134,19 @@ public class Order {
         this.to = to;
     }
 
-    public int getIdPassenger() {
+    public Long getIdPassenger() {
         return idPassenger;
     }
 
-    public void setIdPassenger(int idPassenger) {
+    public void setIdPassenger(Long idPassenger) {
         this.idPassenger = idPassenger;
     }
 
-    public int getIdDriver() {
+    public Long getIdDriver() {
         return idDriver;
     }
 
-    public void setIdDriver(int idDriver) {
+    public void setIdDriver(Long idDriver) {
         this.idDriver = idDriver;
     }
 

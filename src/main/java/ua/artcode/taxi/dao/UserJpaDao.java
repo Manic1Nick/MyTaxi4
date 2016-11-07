@@ -1,6 +1,5 @@
 package ua.artcode.taxi.dao;
 
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ua.artcode.taxi.model.*;
 
@@ -9,7 +8,7 @@ import javax.persistence.PersistenceContext;
 import java.util.Collection;
 import java.util.List;
 
-@Component(value = "userDao")
+//@Component(value = "userDao")
 public class UserJpaDao implements UserDao {
 
     @PersistenceContext
@@ -43,9 +42,9 @@ public class UserJpaDao implements UserDao {
         UserIdentifier identifier = newUser.getIdentifier();
 
         foundUser.setIdentifier(newUser.getIdentifier());
-        foundUser.setPhone(newUser.getPhone());
-        foundUser.setPass(newUser.getPass());
-        foundUser.setName(newUser.getName());
+        foundUser.setUserphone(newUser.getUserphone());
+        foundUser.setPassword(newUser.getPassword());
+        foundUser.setUsername(newUser.getUsername());
 
         if (identifier.equals(UserIdentifier.P)) {
             foundUser = updateHomeAddress(foundUser, newUser.getHomeAddress());
@@ -61,7 +60,7 @@ public class UserJpaDao implements UserDao {
 
     @Override
     @Transactional
-    public User deleteUser(int id) {
+    public User deleteUser(Long id) {
 
         User delUser = findById(id);
         manager.remove(delUser);
@@ -74,7 +73,7 @@ public class UserJpaDao implements UserDao {
     public User findByPhone(String checkPhone) {
 
         List<User> users = manager.createQuery(
-                "SELECT c FROM User c WHERE c.phone=:phone")
+                "SELECT c FROM User c WHERE c.userphone=:phone")
                 .setParameter("phone", checkPhone).getResultList();
 
         return users.size() != 0 ? users.get(0) : null ;
@@ -82,14 +81,14 @@ public class UserJpaDao implements UserDao {
 
     @Override
     @Transactional
-    public User findById(int id) {
+    public User findById(Long id) {
 
         return manager.find(User.class, id);
     }
 
     @Override
     @Transactional
-    public List<Order> getOrdersOfUser(int userId, int from, int to) {
+    public List<Order> getOrdersOfUser(Long userId, int from, int to) {
 
         List<Order> orders = manager.createQuery(
                 "SELECT c FROM Order c WHERE c.idPassenger=:userId OR c.idDriver=:userId")
@@ -100,7 +99,7 @@ public class UserJpaDao implements UserDao {
 
     @Override
     @Transactional
-    public int getQuantityOrdersOfUser(int userId) {
+    public int getQuantityOrdersOfUser(Long userId) {
 
         List<Long> orderIds = manager.createQuery(
                 "SELECT c.id FROM Order c WHERE c.idPassenger=:userId OR c.idDriver=:userId")

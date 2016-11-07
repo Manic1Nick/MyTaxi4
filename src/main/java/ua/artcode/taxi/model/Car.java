@@ -3,12 +3,8 @@ package ua.artcode.taxi.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "cars")
+@Table(name = "car")
 public class Car {
-
-    /*@Expose(serialize = false, deserialize = false)
-    @OneToMany(mappedBy = "car", cascade=CascadeType.ALL, fetch = FetchType.LAZY)
-    transient List<User> users = new ArrayList<>();*/
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")

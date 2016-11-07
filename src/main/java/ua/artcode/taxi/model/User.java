@@ -1,75 +1,81 @@
 package ua.artcode.taxi.model;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 @NamedQueries({@NamedQuery(name = "getAllUsers", query = "SELECT c FROM User c")})
 public class User implements PassengerActive, DriverActive {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    /*@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)*/
+    private Long id;
 
-    @Enumerated(EnumType.STRING)
+    //@Enumerated(EnumType.STRING)
     private UserIdentifier identifier;
 
-    @Column(name = "phone", nullable = false)
-    private String phone;
+    //@Column(name = "phone", nullable = false)
+    private String userphone;
 
-    @Column(name = "pass", nullable = false)
-    private String pass;
+    //@Column(name = "password", nullable = false)
+    private String password;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    private String passwordConfirm;
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
+    //@Column(name = "username", nullable = false)
+    private String username;
+
+    /*@OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")*/
     private Address homeAddress;
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
+    /*@OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")*/
     private Car car;
 
     @Transient
     private String userCurrentLocation;
 
+    private Set<Role> roles;
+
     public User() {
     }
 
     //for passenger
-    public User(UserIdentifier identifier, String phone, String pass, String name, Address homeAddress) {
+    public User(UserIdentifier identifier, String userphone, String password, String username, Address homeAddress) {
         this.identifier = identifier;
-        this.phone = phone;
-        this.pass = pass;
-        this.name = name;
+        this.userphone = userphone;
+        this.password = password;
+        this.username = username;
         this.homeAddress = homeAddress;
     }
 
     //for driver
-    public User(UserIdentifier identifier, String phone, String pass, String name, Car car) {
+    public User(UserIdentifier identifier, String userphone, String password, String username, Car car) {
         this.identifier = identifier;
-        this.phone = phone;
-        this.pass = pass;
-        this.name = name;
+        this.userphone = userphone;
+        this.password = password;
+        this.username = username;
         this.car = car;
     }
 
     //for anonymous
-    public User(UserIdentifier identifier, String phone, String name) {
+    public User(UserIdentifier identifier, String userphone, String username) {
         this.identifier = identifier;
-        this.phone = phone;
-        this.name = name;
+        this.userphone = userphone;
+        this.username = username;
     }
 
     @Override
-    public int getId() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
         return id;
     }
 
     @Override
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -83,37 +89,33 @@ public class User implements PassengerActive, DriverActive {
         this.identifier = identifier;
     }
 
-    @Override
-    public String getPhone() {
-        return phone;
+    public String getUserphone() {
+        return userphone;
+    }
+
+    public void setUserphone(String phone) {
+        this.userphone = phone;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String pass) {
+        this.password = pass;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String name) {
+        this.username = name;
     }
 
     @Override
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    @Override
-    public String getPass() {
-        return pass;
-    }
-
-    @Override
-    public void setPass(String pass) {
-        this.pass = pass;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     public Address getHomeAddress() {
         return homeAddress;
     }
@@ -124,6 +126,8 @@ public class User implements PassengerActive, DriverActive {
     }
 
     @Override
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     public Car getCar() {
         return car;
     }
@@ -140,7 +144,28 @@ public class User implements PassengerActive, DriverActive {
     }
 
     public void setUserCurrentLocation(String userCurrentLocation) {
+
         this.userCurrentLocation = userCurrentLocation;
+    }
+
+    @Transient
+    public String getPasswordConfirm() {
+        return passwordConfirm;
+    }
+
+    public void setPasswordConfirm(String passwordConfirm) {
+        this.passwordConfirm = passwordConfirm;
+    }
+
+    @ManyToMany
+    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
     @Override
@@ -148,11 +173,14 @@ public class User implements PassengerActive, DriverActive {
         return "User{" +
                 "id=" + id +
                 ", identifier=" + identifier +
-                ", phone='" + phone + '\'' +
-                ", pass='" + pass + '\'' +
-                ", name='" + name + '\'' +
+                ", userphone='" + userphone + '\'' +
+                ", password='" + password + '\'' +
+                ", passwordConfirm='" + passwordConfirm + '\'' +
+                ", username='" + username + '\'' +
                 ", homeAddress=" + homeAddress +
                 ", car=" + car +
+                ", userCurrentLocation='" + userCurrentLocation + '\'' +
+                ", roles=" + roles +
                 '}';
     }
 
