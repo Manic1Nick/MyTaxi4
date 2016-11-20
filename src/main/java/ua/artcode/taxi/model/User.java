@@ -1,43 +1,28 @@
 package ua.artcode.taxi.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
-@NamedQueries({@NamedQuery(name = "getAllUsers", query = "SELECT c FROM User c")})
-public class User implements PassengerActive, DriverActive {
+@Table(name = "users")
+//@NamedQueries({@NamedQuery(name = "getAllUsers", query = "SELECT c FROM User c")})
+public class User {
 
-    /*@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)*/
     private Long id;
-
-    //@Enumerated(EnumType.STRING)
     private UserIdentifier identifier;
-
-    //@Column(name = "phone", nullable = false)
     private String userphone;
-
-    //@Column(name = "password", nullable = false)
     private String password;
-
     private String passwordConfirm;
-
-    //@Column(name = "username", nullable = false)
     private String username;
-
-    /*@OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")*/
     private Address homeAddress;
-
-    /*@OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")*/
     private Car car;
+    private Address currentAddress;
+    private Set<Role> roles = new HashSet<>();
 
-    @Transient
-    private String userCurrentLocation;
-
-    private Set<Role> roles;
+    private Long lastOrderId;
 
     public User() {
     }
@@ -67,24 +52,20 @@ public class User implements PassengerActive, DriverActive {
         this.username = username;
     }
 
-    @Override
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
         return id;
     }
 
-    @Override
     public void setId(Long id) {
         this.id = id;
     }
 
-    @Override
     public UserIdentifier getIdentifier() {
         return identifier;
     }
 
-    @Override
     public void setIdentifier(UserIdentifier identifier) {
         this.identifier = identifier;
     }
@@ -113,39 +94,36 @@ public class User implements PassengerActive, DriverActive {
         this.username = name;
     }
 
-    @Override
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
     public Address getHomeAddress() {
         return homeAddress;
     }
 
-    @Override
     public void setHomeAddress(Address homeAddress) {
         this.homeAddress = homeAddress;
     }
 
-    @Override
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(referencedColumnName = "id")
     public Car getCar() {
         return car;
     }
 
-    @Override
     public void setCar(Car car) {
         this.car = car;
     }
 
     //todo get current user location
-    public String getUserCurrentLocation() {
+    @Transient
+    public Address getCurrentAddress() {
 
-        return Constants.USER_LOCATION_PATH;
+        return new Address(Constants.USER_LOCATION_PATH);
     }
 
-    public void setUserCurrentLocation(String userCurrentLocation) {
+    public void setCurrentAddress(Address currentAddress) {
 
-        this.userCurrentLocation = userCurrentLocation;
+        this.currentAddress = currentAddress;
     }
 
     @Transient
@@ -168,52 +146,23 @@ public class User implements PassengerActive, DriverActive {
         this.roles = roles;
     }
 
+    public Long getLastOrderId() {
+        return lastOrderId;
+    }
+
+    public void setLastOrderId(Long lastOrderId) {
+        this.lastOrderId = lastOrderId;
+    }
+
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", identifier=" + identifier +
-                ", userphone='" + userphone + '\'' +
-                ", password='" + password + '\'' +
-                ", passwordConfirm='" + passwordConfirm + '\'' +
-                ", username='" + username + '\'' +
-                ", homeAddress=" + homeAddress +
-                ", car=" + car +
-                ", userCurrentLocation='" + userCurrentLocation + '\'' +
-                ", roles=" + roles +
-                '}';
+        return super.toString();
     }
 
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
-
-    /*@Override
-    public boolean equals(Object obj) {
-
-        if (obj instanceof User) {
-
-            if (((User)obj).identifier.equals(UserIdentifier.P)) {
-                return  id == (((User)obj).id) &&
-                        identifier.equals(((User)obj).identifier) &&
-                        phone.equals(((User)obj).phone) &&
-                        name.equals(((User)obj).name) &&
-                        pass.equals(((User)obj).pass) &&
-                        homeAddress.equals(((User)obj).homeAddress);
-
-            } else if (((User)obj).identifier.equals(UserIdentifier.D)) {
-                return  id == (((User)obj).id) &&
-                        identifier.equals(((User)obj).identifier) &&
-                        phone.equals(((User)obj).phone) &&
-                        name.equals(((User)obj).name) &&
-                        pass.equals(((User)obj).pass) &&
-                        car.equals(((User)obj).car);
-            }
-        }
-
-        return false;
-    }*/
 
     @Override
     public int hashCode() {

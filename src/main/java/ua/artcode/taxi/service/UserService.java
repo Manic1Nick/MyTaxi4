@@ -14,11 +14,17 @@ public interface UserService {
 
 
     void save(User user);
+    void save(Order order, User user) throws InputDataWrongException;
 
     User findByUsername(String username);
     User findByUserphone(String userphone);
 
     User findById(Long id);
+    User updateUser(User oldUser, User newUser);
+
+    Order getLastOrder(String userphone);
+    Order getOrderById(Long id);
+
 
     //register
     User registerPassenger(Map<String, String> map) throws RegisterException, InputDataWrongException;

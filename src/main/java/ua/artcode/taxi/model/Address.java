@@ -1,28 +1,29 @@
 package ua.artcode.taxi.model;
 
+import ua.artcode.taxi.exception.InputDataWrongException;
+import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
+import ua.artcode.taxi.utils.geolocation.Location;
+
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
-@Table(name = "address")
+@Table(name = "addresses")
 public class Address {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
-    @Column(name = "country", nullable = false)
     private String country;
-
-    @Column(name = "city", nullable = false)
     private String city;
-
-    @Column(name = "street", nullable = false)
     private String street;
-
-    @Column(name = "houseNum", nullable = false)
     private String houseNum;
 
+    //Set<Order> orders;
+    //private User user;
+
     // google api
+    @Transient
+    private Location location;
     @Transient
     private double lat;
     @Transient
@@ -61,12 +62,13 @@ public class Address {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public long getId() {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -118,6 +120,26 @@ public class Address {
         this.lon = lon;
     }
 
+    /*@OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }*/
+
+    /*@OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }*/
+
     @Override
     public String toString() {
         return "Address{" +
@@ -135,19 +157,6 @@ public class Address {
         return super.equals(obj);
     }
 
-    /*@Override
-    public boolean equals(Object obj) {
-
-        if (obj instanceof Address) {
-            return country.equals(((Address) obj).country) &&
-                    city.equals(((Address) obj).city) &&
-                    street.equals(((Address) obj).street) &&
-                    houseNum.equals(((Address) obj).houseNum);
-        }
-
-        return false;
-    }*/
-
     @Override
     public int hashCode() {
         return (int) (id ^ (id >>> 32));
@@ -161,4 +170,14 @@ public class Address {
                 address.getStreet(),
                 address.getHouseNum());
     }
+
+    /*private Location getLocationFromAddress(Address address) throws InputDataWrongException {
+
+        return googleMapsAPI.findLocation(
+                address.getCountry(),
+                address.getCity(),
+                address.getStreet(),
+                address.getHouseNum()
+        );
+    }*/
 }

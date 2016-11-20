@@ -1,56 +1,28 @@
 package ua.artcode.taxi.model;
 
+import com.sun.org.apache.xml.internal.serialize.Serializer;
+
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name = "order")
-@NamedQueries({@NamedQuery(name = "getAllOrders", query = "SELECT c FROM Order c")})
+@Table(name = "orders")
+//@NamedQueries({@NamedQuery(name = "getAllOrders", query = "SELECT c FROM Order c")})
 public class Order {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @Column(name = "time", nullable = false)
     private Date timeCreate;
-
-    @Transient
     private Date timeTaken;
-
-    @Transient
     private Date timeCancelled;
-
-    @Transient
     private Date timeClosed;
-
-    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
-
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
     private Address from;
-
-    @ManyToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
     private Address to;
-
-    @Column(name = "passenger_id", nullable = false)
     private Long idPassenger;
-
-    @Column(name = "driver_id", nullable = false)
     private Long idDriver;
-
-    @Column(name = "distance", nullable = false)
     private int distance;
-
-    @Column(name = "price", nullable = false)
     private int price;
-
     private String message;
-
-    @Transient
     private int distanceToDriver;
 
     public Order() {
@@ -70,14 +42,17 @@ public class Order {
         this.to = to;
     }
 
-    public long getId() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getTimeCreate() {
         return timeCreate;
     }
@@ -86,6 +61,7 @@ public class Order {
         this.timeCreate = timeCreate;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getTimeTaken() {
         return timeTaken;
     }
@@ -94,6 +70,7 @@ public class Order {
         this.timeTaken = timeTaken;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getTimeCancelled() {
         return timeCancelled;
     }
@@ -102,6 +79,7 @@ public class Order {
         this.timeCancelled = timeCancelled;
     }
 
+    @Temporal(TemporalType.TIMESTAMP)
     public Date getTimeClosed() {
         return timeClosed;
     }
@@ -118,6 +96,8 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "from_id")
     public Address getFrom() {
         return from;
     }
@@ -126,6 +106,8 @@ public class Order {
         this.from = from;
     }
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "to_id")
     public Address getTo() {
         return to;
     }
@@ -174,6 +156,7 @@ public class Order {
         this.message = message;
     }
 
+    @Transient
     public int getDistanceToDriver() {
         return distanceToDriver;
     }
@@ -200,38 +183,6 @@ public class Order {
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
-
-    /*@Override
-    public boolean equals(Object obj) {
-
-        if (obj instanceof Order) {
-
-            if (((Order)obj).idDriver <= 0) {
-                return  id == (((Order)obj).id) &&
-                        timeCreate == (((Order)obj).timeCreate) &&
-                        orderStatus.equals(((Order)obj).orderStatus) &&
-                        from.equals(((Order)obj).from) &&
-                        to.equals(((Order)obj).to) &&
-                        idPassenger == (((Order)obj).idPassenger) &&
-                        distance == (((Order)obj).distance) &&
-                        price == (((Order)obj).price) &&
-                        message.equals(((Order)obj).message);
-
-            } else if (((Order)obj).idDriver > 0) {
-                return  id == (((Order)obj).id) &&
-                        timeCreate == (((Order)obj).timeCreate) &&
-                        orderStatus.equals(((Order)obj).orderStatus) &&
-                        from.equals(((Order)obj).from) &&
-                        to.equals(((Order)obj).to) &&
-                        idPassenger == (((Order)obj).idPassenger) &&
-                        idDriver == (((Order)obj).idDriver) &&
-                        distance == (((Order)obj).distance) &&
-                        price == (((Order)obj).price) &&
-                        message.equals(((Order)obj).message);
-            }
-        }
-        return false;
-    }*/
 
     @Override
     public int hashCode() {

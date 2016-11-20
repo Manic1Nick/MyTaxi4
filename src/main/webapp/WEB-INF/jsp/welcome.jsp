@@ -2,6 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+<c:set var="user" value="${currentUser}"/>
+<c:set var="message" value="${message}"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -27,12 +29,31 @@
 <div class="container">
 
     <c:if test="${pageContext.request.userPrincipal.name != null}">
+
         <form id="logoutForm" method="POST" action="${contextPath}/logout">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
 
-        <h2>Welcome ${pageContext.request.userPrincipal.name} |
-            <a onclick="document.forms['logoutForm'].submit()">Logout</a></h2>
+        <c:if test="${message != null}">
+            <div class="alert alert-success">
+                <h3><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>${message}</strong></h3>
+            </div>
+        </c:if>
+
+        <h2><a onclick="document.forms['logoutForm'].submit()">Logout</a></h2>
+
+        <c:if test="${user.homeAddress != null}">
+            <h2 class="text-left"><a href="${contextPath}/order/make">Make order</a></h2>
+        </c:if>
+
+        <c:if test="${user.car != null}">
+            <h2 class="text-left"><a href="${contextPath}/find_passenger">Find passenger</a></h2>
+        </c:if>
+
+        <h2 class="text-left"><a href="${contextPath}/history">Show history</a></h2>
+        <h2 class="text-left"><a href="${contextPath}/order/get?id=${user.lastOrderId}">Show last order</a></h2>
+        <h2 class="text-left"><a href="${contextPath}/map">Show map</a></h2>
 
     </c:if>
 

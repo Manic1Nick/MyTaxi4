@@ -17,4 +17,6 @@
 
     <context:property-placeholder location="classpath:app.properties"/>
 
+    <bean class="ua.artcode.taxi.aspect.LoggerAspect"/>
+
 </beans>

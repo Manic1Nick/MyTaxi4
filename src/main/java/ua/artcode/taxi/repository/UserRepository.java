@@ -6,4 +6,5 @@ import ua.artcode.taxi.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username);
     User findByUserphone(String userphone);
+    User findById(Long id);
 }

@@ -43,8 +43,9 @@
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
             <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
-            <h4 class="text-center"><a href="${contextPath}/registration_passenger">Create new passenger</a></h4>
-            <h4 class="text-center"><a href="${contextPath}/registration_driver">Create new driver</a></h4>
+
+            <h5 class="text-center"><a href="${contextPath}/registration_passenger">Create new passenger</a></h5>
+            <h5 class="text-center"><a href="${contextPath}/registration_driver">Create new driver</a></h5>
         </div>
 
     </form:form>

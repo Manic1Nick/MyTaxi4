@@ -8,6 +8,7 @@ import ua.artcode.taxi.dao.OrderDao;
 import ua.artcode.taxi.dao.UserDao;
 import ua.artcode.taxi.exception.*;
 import ua.artcode.taxi.model.*;
+import ua.artcode.taxi.repository.OrderRepository;
 import ua.artcode.taxi.repository.RoleRepository;
 import ua.artcode.taxi.repository.UserRepository;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
@@ -32,6 +33,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
@@ -43,6 +46,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void save(Order order, User user) throws InputDataWrongException {
+        order.setOrderStatus(OrderStatus.NEW);
+        order.setTimeCreate(new Date());
+        order.setIdPassenger(user.getId());
+        order.setDistance(calculateDistance(order.getFrom(), order.getTo()));
+        order.setPrice(calculatePrice(order.getDistance()));
+        orderRepository.save(order);
+
+        user.setLastOrderId(order.getId());
+        userRepository.save(user);
+    }
+
+    @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -50,6 +66,42 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUserphone(String userphone) {
         return userRepository.findByUserphone(userphone);
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public User updateUser(User oldUser, User newUser) {
+        oldUser.setId(newUser.getId());
+        oldUser.setUserphone(newUser.getUserphone());
+        oldUser.setPassword(newUser.getPassword());
+        oldUser.setPasswordConfirm(newUser.getPasswordConfirm());
+        oldUser.setUsername(newUser.getUsername());
+        oldUser.setHomeAddress(newUser.getHomeAddress());
+        oldUser.setCar(newUser.getCar());
+        oldUser.setCurrentAddress(newUser.getCurrentAddress());
+        oldUser.setRoles(newUser.getRoles());
+        oldUser.setLastOrderId(newUser.getLastOrderId());
+
+        return userRepository.save(oldUser);
+    }
+
+    @Override
+    public Order getLastOrder(String userphone) {
+        User user = userRepository.findByUserphone(userphone);
+
+        if (user.getLastOrderId() != null)
+            return orderRepository.findById(user.getLastOrderId());
+
+        return null;
+    }
+
+    @Override
+    public Order getOrderById(Long id) {
+        return orderRepository.findById(id);
     }
 
     private double pricePerKilometer;
@@ -350,7 +402,7 @@ public class UserServiceImpl implements UserService {
 
         //find all orders with status
         List<Order> ordersByStatus = getAllOrdersByStatus(orderStatus);
-        Address addressDriver = new Address(driver.getUserCurrentLocation());
+        Address addressDriver = driver.getCurrentAddress();
         Location locationDriver = googleMapsAPI.findLocation(
                 addressDriver.getCountry(),
                 addressDriver.getCity(),
@@ -504,11 +556,7 @@ public class UserServiceImpl implements UserService {
         return sortingMapDistances;
     }
 
-    @Override
-    public User findById(Long id) {
 
-        return userDao.findById(id);
-    }
 
     private List<Integer> getArrayDistancesToDriver(List<Order> orders, Address addressDriver)
             throws InputDataWrongException {
@@ -742,4 +790,18 @@ public class UserServiceImpl implements UserService {
         }
         return roleRepository.save(new Role(name));
     }
+
+    @Transactional
+    private int calculateDistance(Address from, Address to) throws InputDataWrongException {
+        Location location = getLocationFromAddress(from);
+        Location location1 = getLocationFromAddress(to);
+
+        return ((int) googleMapsAPI.getDistance(location, location1) / 1000);
+    }
+
+    @Transactional
+    private int calculatePrice(int distance) {
+        return (int) pricePerKilometer * distance + Constants.FEE_FOR_FILING_TAXI_UAH;
+    }
+
 }

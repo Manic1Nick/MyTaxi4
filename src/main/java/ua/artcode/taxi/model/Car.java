@@ -3,25 +3,16 @@ package ua.artcode.taxi.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "car")
+@Table(name = "cars")
 public class Car {
 
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
-    private User user;
+    private Long id;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private String type;
+    private String model;
+    private String number;
 
-    @Column(name = "type", nullable = false)
-    String type;
-
-    @Column(name = "model", nullable = false)
-    String model;
-
-    @Column(name = "number", nullable = false)
-    String number;
+    //private User user;
 
     public Car() {
 
@@ -33,11 +24,13 @@ public class Car {
         this.type = type;
     }
 
-    public long getId() {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -65,13 +58,15 @@ public class Car {
         this.number = number;
     }
 
+    /*@OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
-    }
+    }*/
 
     @Override
     public boolean equals(Object obj) {
