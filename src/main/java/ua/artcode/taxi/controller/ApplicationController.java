@@ -17,6 +17,7 @@ import ua.artcode.taxi.validator.UserValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class ApplicationController {
@@ -58,14 +59,14 @@ public class ApplicationController {
         return "welcome";
     }
 
-    @RequestMapping(value = "/registration_passenger", method = RequestMethod.GET)
+    @RequestMapping(value = "/registration/passenger", method = RequestMethod.GET)
     public String registrationPassenger(Model model) {
         model.addAttribute("userForm", new User());
 
         return "registration_passenger";
     }
 
-    @RequestMapping(value = "/registration_passenger", method = RequestMethod.POST)
+    @RequestMapping(value = "/registration/passenger", method = RequestMethod.POST)
     public String registrationPassenger(@ModelAttribute("userForm") User userForm,
                                         BindingResult bindingResult, Model model) {
         userValidator.validate(userForm, bindingResult);
@@ -81,14 +82,14 @@ public class ApplicationController {
         return "redirect:/welcome";
     }
 
-    @RequestMapping(value = "/registration_driver", method = RequestMethod.GET)
+    @RequestMapping(value = "/registration/driver", method = RequestMethod.GET)
     public String registrationDriver(Model model) {
         model.addAttribute("userForm", new User());
 
         return "registration_driver";
     }
 
-    @RequestMapping(value = "/registration_driver", method = RequestMethod.POST)
+    @RequestMapping(value = "/registration/driver", method = RequestMethod.POST)
     public String registrationDriver(@ModelAttribute("userForm") User userForm,
                                      BindingResult bindingResult, Model model) {
         userValidator.validate(userForm, bindingResult);
@@ -153,5 +154,14 @@ public class ApplicationController {
         model.addAttribute("order", order);
 
         return "order_info";
+    }
+
+    @RequestMapping(value = "/order/get/all", method = RequestMethod.GET)
+    public String getAllOrders(Model model, Principal principal) {
+
+        List<Order> orders = userService.getListOrdersOfUser(principal.getName());
+        model.addAttribute("listOrders", orders);
+
+        return "history";
     }
 }

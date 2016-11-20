@@ -35,47 +35,47 @@
         <spring:bind path="userphone">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="text" path="userphone" class="form-control" placeholder="Userphone"
-                            autofocus="true"></form:input>
-                <form:errors path="userphone"></form:errors>
+                            autofocus="true"/>
+                <form:errors path="userphone"/>
             </div>
         </spring:bind>
 
         <spring:bind path="password">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="password" path="password" class="form-control"
-                            placeholder="Password"></form:input>
-                <form:errors path="password"></form:errors>
+                            placeholder="Password"/>
+                <form:errors path="password"/>
             </div>
         </spring:bind>
 
         <spring:bind path="passwordConfirm">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="password" path="passwordConfirm" class="form-control"
-                            placeholder="Confirm your password"></form:input>
-                <form:errors path="passwordConfirm"></form:errors>
+                            placeholder="Confirm your password"/>
+                <form:errors path="passwordConfirm"/>
             </div>
         </spring:bind>
 
         <spring:bind path="username">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="text" path="username" class="form-control" placeholder="Username"
-                            autofocus="true"></form:input>
-                <form:errors path="username"></form:errors>
+                            autofocus="true"/>
+                <form:errors path="username"/>
             </div>
         </spring:bind>
 
         <spring:bind path="homeAddress.country">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="text" path="homeAddress.country" class="form-control" placeholder="Homecountry"
-                            autofocus="true"></form:input>
-                <form:errors path="homeAddress.country"></form:errors>
+                            autofocus="true"/>
+                <form:errors path="homeAddress.country"/>
             </div>
         </spring:bind>
         <spring:bind path="homeAddress.city">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="text" path="homeAddress.city" class="form-control" placeholder="Homecity"
-                            autofocus="true"></form:input>
-                <form:errors path="homeAddress.city"></form:errors>
+                            autofocus="true"/>
+                <form:errors path="homeAddress.city"/>
             </div>
         </spring:bind>
         <spring:bind path="homeAddress.street">
@@ -88,8 +88,8 @@
         <spring:bind path="homeAddress.houseNum">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="text" path="homeAddress.houseNum" class="form-control" placeholder="Housenumber"
-                            autofocus="true"></form:input>
-                <form:errors path="homeAddress.houseNum"></form:errors>
+                            autofocus="true"/>
+                <form:errors path="homeAddress.houseNum"/>
             </div>
         </spring:bind>
 

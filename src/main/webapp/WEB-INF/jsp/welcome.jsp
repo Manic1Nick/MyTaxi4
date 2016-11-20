@@ -36,24 +36,67 @@
 
         <c:if test="${message != null}">
             <div class="alert alert-success">
-                <h3><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <strong>${message}</strong></h3>
+                <h4><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>${message}</strong></h4>
             </div>
         </c:if>
 
-        <h2><a onclick="document.forms['logoutForm'].submit()">Logout</a></h2>
+        <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a></h4>
+
+        <div class="container">
+            <h2>User Info</h2>
+            <table class="table table-hover">
+                <tbody>
+                <tr>
+                    <td>ID</td>
+                    <td>${user.id}</td>
+                </tr>
+                <c:if test="${user.homeAddress != null}">
+                    <tr>
+                        <td>Identifier</td>
+                        <td>Passenger</td>
+                    </tr>
+                    <tr>
+                        <td>Home address</td>
+                        <td>${user.homeAddress.country}, ${user.homeAddress.city},
+                                ${user.homeAddress.street}, ${user.homeAddress.houseNum}</td>
+                    </tr>
+                </c:if>
+                <c:if test="${user.car != null}">
+                    <tr>
+                        <td>Identifier</td>
+                        <td>Driver</td>
+                    </tr>
+                    <tr>
+                        <td>Car</td>
+                        <td>${user.car.type}, ${user.car.model}, ${user.car.number}</td>
+                    </tr>
+                </c:if>
+
+                <tr>
+                    <td>Phone</td>
+                    <td>${user.userphone}</td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>${user.username}</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
 
         <c:if test="${user.homeAddress != null}">
-            <h2 class="text-left"><a href="${contextPath}/order/make">Make order</a></h2>
+            <h4 class="text-left"><a href="${contextPath}/order/make">Make order</a></h4>
         </c:if>
 
         <c:if test="${user.car != null}">
-            <h2 class="text-left"><a href="${contextPath}/find_passenger">Find passenger</a></h2>
+            <h4 class="text-left"><a href="${contextPath}/order/get/new">Find passenger</a></h4>
         </c:if>
 
-        <h2 class="text-left"><a href="${contextPath}/history">Show history</a></h2>
-        <h2 class="text-left"><a href="${contextPath}/order/get?id=${user.lastOrderId}">Show last order</a></h2>
-        <h2 class="text-left"><a href="${contextPath}/map">Show map</a></h2>
+        <h4 class="text-left"><a href="${contextPath}/order/get/all">Show history</a></h4>
+        <h4 class="text-left"><a href="${contextPath}/order/get?id=${user.lastOrderId}">Show last order</a></h4>
+        <h4 class="text-left"><a href="${contextPath}/map">Show map</a></h4>
 
     </c:if>
 

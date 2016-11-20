@@ -7,6 +7,7 @@ public final class Constants {
     public static final double PRICE_PER_KILOMETER_UAH = 5;
     public static final int AVERAGE_SPEED_KM_H = 60;
 
+    public static final int MAX_QUANTITY_ORDERS_FOR_HISTORY = 100;
     public static final int QUANTITY_ORDERS_ON_HISTORY_PAGE = 5;
 
     public static final int FEE_FOR_FILING_TAXI_UAH = 30;

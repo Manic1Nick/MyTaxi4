@@ -44,8 +44,8 @@
 
             <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
 
-            <h5 class="text-center"><a href="${contextPath}/registration_passenger">Create new passenger</a></h5>
-            <h5 class="text-center"><a href="${contextPath}/registration_driver">Create new driver</a></h5>
+            <h5 class="text-center"><a href="${contextPath}/registration/passenger">Create new passenger</a></h5>
+            <h5 class="text-center"><a href="${contextPath}/registration/driver">Create new driver</a></h5>
         </div>
 
     </form:form>

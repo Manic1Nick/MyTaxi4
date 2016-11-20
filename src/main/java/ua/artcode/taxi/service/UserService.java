@@ -24,6 +24,7 @@ public interface UserService {
 
     Order getLastOrder(String userphone);
     Order getOrderById(Long id);
+    List<Order> getListOrdersOfUser(String userphone);
 
 
     //register

@@ -68,7 +68,7 @@
                 </c:if>
                 <c:if test="${order.timeClosed != null}">
                     <tr>
-                        <td>Time cancelled</td>
+                        <td>Time closed</td>
                         <td>${order.timeClosed}</td>
                     </tr>
                 </c:if>
@@ -110,7 +110,7 @@
 
         <h4 class="text-left"><a href="${contextPath}/order/make?id=${order.id}">
             Copy order as new</a></h4>
-        <h4 class="text-left"><a href="${contextPath}/history">
+        <h4 class="text-left"><a href="${contextPath}/order/get/all">
             Show history</a></h4>
         <h4 class="text-left"><a href="${contextPath}/order/get?id=${currentUser.lastOrderId}">
             Show last order</a></h4>

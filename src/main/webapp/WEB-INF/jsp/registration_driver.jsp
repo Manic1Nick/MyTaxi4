@@ -35,53 +35,54 @@
         <spring:bind path="userphone">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="text" path="userphone" class="form-control" placeholder="Userphone"
-                            autofocus="true"></form:input>
-                <form:errors path="userphone"></form:errors>
+                            autofocus="true"/>
+                <form:errors path="userphone"/>
             </div>
         </spring:bind>
 
         <spring:bind path="password">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="password" path="password" class="form-control" placeholder="Password"></form:input>
-                <form:errors path="password"></form:errors>
+                <form:input type="password" path="password" class="form-control"
+                            placeholder="Password"/>
+                <form:errors path="password"/>
             </div>
         </spring:bind>
 
         <spring:bind path="passwordConfirm">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="password" path="passwordConfirm" class="form-control"
-                            placeholder="Confirm your password"></form:input>
-                <form:errors path="passwordConfirm"></form:errors>
+                            placeholder="Confirm your password"/>
+                <form:errors path="passwordConfirm"/>
             </div>
         </spring:bind>
 
         <spring:bind path="username">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="text" path="username" class="form-control" placeholder="Username"
-                            autofocus="true"></form:input>
-                <form:errors path="username"></form:errors>
+                            autofocus="true"/>
+                <form:errors path="username"/>
             </div>
         </spring:bind>
 
         <spring:bind path="car.type">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="text" path="car.type" class="form-control" placeholder="Cartype"
-                            autofocus="true"></form:input>
-                <form:errors path="car.type"></form:errors>
+                            autofocus="true"/>
+                <form:errors path="car.type"/>
             </div>
         </spring:bind>
         <spring:bind path="car.model">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="text" path="car.model" class="form-control" placeholder="Carmodel"
-                            autofocus="true"></form:input>
-                <form:errors path="car.model"></form:errors>
+                            autofocus="true"/>
+                <form:errors path="car.model"/>
             </div>
         </spring:bind>
         <spring:bind path="car.number">
             <div class="form-group ${status.error ? 'has-error' : ''}">
                 <form:input type="text" path="car.number" class="form-control" placeholder="Carnumber"
-                            autofocus="true"></form:input>
-                <form:errors path="car.number"></form:errors>
+                            autofocus="true"/>
+                <form:errors path="car.number"/>
             </div>
         </spring:bind>
 

@@ -104,6 +104,19 @@ public class UserServiceImpl implements UserService {
         return orderRepository.findById(id);
     }
 
+    @Override
+    public List<Order> getListOrdersOfUser(String userphone) {
+        User user = userRepository.findByUserphone(userphone);
+
+        if (user.getHomeAddress() != null)
+            return orderRepository.findByIdPassenger(user.getId());
+
+        if (user.getCar() != null)
+            return orderRepository.findByIdDriver(user.getId());
+
+        return null;
+    }
+
     private double pricePerKilometer;
     private GoogleMapsAPI googleMapsAPI;
     private Map<String, User> accessKeys;
