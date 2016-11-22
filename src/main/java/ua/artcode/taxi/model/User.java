@@ -8,28 +8,26 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-//@NamedQueries({@NamedQuery(name = "getAllUsers", query = "SELECT c FROM User c")})
 public class User {
 
     private Long id;
-    private UserIdentifier identifier;
     private String userphone;
     private String password;
     private String passwordConfirm;
     private String username;
     private Address homeAddress;
     private Car car;
-    private Address currentAddress;
+    private Address currentAddress = new Address(Constants.USER_LOCATION_PATH);
     private Set<Role> roles = new HashSet<>();
 
     private Long lastOrderId;
+    private int quantityOrders;
 
     public User() {
     }
 
     //for passenger
-    public User(UserIdentifier identifier, String userphone, String password, String username, Address homeAddress) {
-        this.identifier = identifier;
+    public User(String userphone, String password, String username, Address homeAddress) {
         this.userphone = userphone;
         this.password = password;
         this.username = username;
@@ -37,19 +35,11 @@ public class User {
     }
 
     //for driver
-    public User(UserIdentifier identifier, String userphone, String password, String username, Car car) {
-        this.identifier = identifier;
+    public User(String userphone, String password, String username, Car car) {
         this.userphone = userphone;
         this.password = password;
         this.username = username;
         this.car = car;
-    }
-
-    //for anonymous
-    public User(UserIdentifier identifier, String userphone, String username) {
-        this.identifier = identifier;
-        this.userphone = userphone;
-        this.username = username;
     }
 
     @Id
@@ -60,14 +50,6 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public UserIdentifier getIdentifier() {
-        return identifier;
-    }
-
-    public void setIdentifier(UserIdentifier identifier) {
-        this.identifier = identifier;
     }
 
     public String getUserphone() {
@@ -118,7 +100,7 @@ public class User {
     @Transient
     public Address getCurrentAddress() {
 
-        return new Address(Constants.USER_LOCATION_PATH);
+        return currentAddress;
     }
 
     public void setCurrentAddress(Address currentAddress) {
@@ -152,6 +134,14 @@ public class User {
 
     public void setLastOrderId(Long lastOrderId) {
         this.lastOrderId = lastOrderId;
+    }
+
+    public int getQuantityOrders() {
+        return quantityOrders;
+    }
+
+    public void setQuantityOrders(int quantityOrders) {
+        this.quantityOrders = quantityOrders;
     }
 
     @Override

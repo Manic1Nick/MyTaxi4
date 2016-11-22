@@ -91,10 +91,14 @@
         </c:if>
 
         <c:if test="${user.car != null}">
-            <h4 class="text-left"><a href="${contextPath}/order/get/new">Find passenger</a></h4>
+            <h4 class="text-left"><a href="${contextPath}/order/get/all-new">Find passenger</a></h4>
         </c:if>
 
-        <h4 class="text-left"><a href="${contextPath}/order/get/all">Show history</a></h4>
+        <h4 class="text-left">
+            <a href="${contextPath}/order/get/all">Show history
+                <span class="badge">${user.quantityOrders}</span></a>
+        </h4>
+
         <h4 class="text-left"><a href="${contextPath}/order/get?id=${user.lastOrderId}">Show last order</a></h4>
         <h4 class="text-left"><a href="${contextPath}/map">Show map</a></h4>
 

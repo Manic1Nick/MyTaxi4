@@ -111,7 +111,8 @@
         <h4 class="text-left"><a href="${contextPath}/order/make?id=${order.id}">
             Copy order as new</a></h4>
         <h4 class="text-left"><a href="${contextPath}/order/get/all">
-            Show history</a></h4>
+            Show history
+            <span class="badge">${currentUser.quantityOrders}</span></a></h4>
         <h4 class="text-left"><a href="${contextPath}/order/get?id=${currentUser.lastOrderId}">
             Show last order</a></h4>
         <h4 class="text-left"><a href="${contextPath}/map">

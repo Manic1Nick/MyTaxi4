@@ -28,7 +28,7 @@ public class UserValidator implements Validator {
                 !user.getUserphone().startsWith("+380")) {
             errors.rejectValue("userphone", "Type.userForm.userphone");
         }
-        if (userService.findByUserphone(user.getUserphone()) != null) {
+        if (userService.getByUserphone(user.getUserphone()) != null) {
             errors.rejectValue("userphone", "Duplicate.userForm.userphone");
         }
 

@@ -1,11 +1,11 @@
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
-import ua.artcode.taxi.dao.OrderJpaDao;
-import ua.artcode.taxi.dao.UserJpaDao;
-import ua.artcode.taxi.model.*;
+import ua.artcode.taxi.model.Address;
+import ua.artcode.taxi.model.Car;
+import ua.artcode.taxi.model.Order;
+import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.UserService;
-import ua.artcode.taxi.service.UserServiceImpl;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 
@@ -15,8 +15,6 @@ import java.util.Map;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TestMyTaxi {
 
-    private static UserJpaDao userDao;
-    private static OrderJpaDao orderDao;
     private static double pricePerKilometer = 5;
     private static GoogleMapsAPI googleMapsAPI = new GoogleMapsAPIImpl();
     private static Map<String, User> accessKeys = new HashMap<>();
@@ -37,9 +35,6 @@ public class TestMyTaxi {
 
     @BeforeClass
     public static void beforeClass() {
-        userDao = new UserJpaDao();
-        orderDao = new OrderJpaDao();
-        userService = new UserServiceImpl(userDao, orderDao);
 
         //delete after sharing to methods below
         address1 = new Address("Ukraine", "Kiev", "Khreschatik", "5");
@@ -47,13 +42,11 @@ public class TestMyTaxi {
 
         car = new Car("sedan", "skoda rapid", "2233");
 
-        passenger1 = new User(UserIdentifier.P, "1234", "test", "Vasya1", address1);
-        passenger2 = new User(UserIdentifier.P, "4321", "test", "Vasya2", address2);
+        passenger1 = new User("1234", "test", "Vasya1", address1);
+        passenger2 = new User("4321", "test", "Vasya2", address2);
 
-        driver1 = new User(UserIdentifier.D, "5678", "test", "Petya1", car);
-        driver2 = new User(UserIdentifier.D, "8765", "test", "Petya2", car);
-
-        anonymousUser = new User(UserIdentifier.A, "0000", "Anonym");
+        driver1 = new User("5678", "test", "Petya1", car);
+        driver2 = new User("8765", "test", "Petya2", car);
 
         //test current orders for driver
         order1 = new Order (address1, address2, passenger1.getId(), 10, 100, "I have a dog!:)");

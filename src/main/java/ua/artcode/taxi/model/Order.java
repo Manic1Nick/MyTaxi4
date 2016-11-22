@@ -7,7 +7,6 @@ import java.util.Date;
 
 @Entity
 @Table(name = "orders")
-//@NamedQueries({@NamedQuery(name = "getAllOrders", query = "SELECT c FROM Order c")})
 public class Order {
 
     private Long id;
