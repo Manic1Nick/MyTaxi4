@@ -34,6 +34,7 @@ public interface UserService {
     Map<Long, Double> createMapOrdersWithDistancesToDriver(
             List<Order> orders, Address addressDriver)
             throws InputDataWrongException;
+    Map<Long, User> getMapUsersFromUserOrders(List<Order> orders, boolean passenger);
 
     Address getUserLocation();
 

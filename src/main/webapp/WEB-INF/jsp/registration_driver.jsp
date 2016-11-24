@@ -30,6 +30,15 @@
 
 <div class="container">
 
+    <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+    <form id="logoutForm" method="POST" action="${contextPath}/logout">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+    <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a> |
+        <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
+
     <form:form method="POST" modelAttribute="userForm" class="form-signin">
         <h2 class="form-signin-heading">Create your account</h2>
         <spring:bind path="userphone">

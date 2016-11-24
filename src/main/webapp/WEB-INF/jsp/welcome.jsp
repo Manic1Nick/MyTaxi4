@@ -36,6 +36,7 @@
 
     <c:if test="${pageContext.request.userPrincipal.name != null}">
 
+        <%--ALERT MESSAGE--%>
         <c:if test="${message != null}">
             <div class="alert alert-success">
                 <h4><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -43,10 +44,52 @@
             </div>
         </c:if>
 
+        <%--LOGOUT--%>
         <form id="logoutForm" method="POST" action="${contextPath}/logout">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-        <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a></h4>
+        <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a> |
+
+        <%--SHOW HISTORY--%>
+            <a href="${contextPath}/order/get/all">Show history
+                <span class="badge">${user.quantityOrders}</span></a> |
+
+        <%--SHOW LAST ORDER--%>
+            <c:if test="${user.lastOrderId != null}">
+                <a href="${contextPath}/order/get?id=${user.lastOrderId}">Show last order</a> |
+            </c:if>
+            <c:if test="${user.lastOrderId == null}">
+                <a class="text-left" data-toggle="tooltip" title="You don't have any orders!"
+                    style="color:grey">Show last order</a> |
+            </c:if>
+
+        <%--SHOW MAP--%>
+            <a class="text-left" data-toggle="tooltip" title="Please make me!"
+                style="color:grey">Show map</a> |
+
+        <%--MAKE ORDER / FIND PESSENGER--%>
+            <c:if test="${user.active == false}">
+                <c:if test="${user.homeAddress != null}">
+                    <a href="${contextPath}/order/make">Make order</a>
+                </c:if>
+                <c:if test="${user.car != null}">
+                    <a href="${contextPath}/order/get/all-new">Find passenger</a>
+                </c:if>
+            </c:if>
+
+            <c:if test="${user.active == true}">
+                <c:if test="${user.homeAddress != null}">
+                    <a class="text-left" data-toggle="tooltip" title="You have active orders now!"
+                       style="color:grey">Make order</a>
+                </c:if>
+                <c:if test="${user.car != null}">
+                    <a class="text-left" data-toggle="tooltip" title="You have active orders now!"
+                       style="color:grey">Find passenger</a>
+                </c:if>
+            </c:if>
+
+
+        </h4>
 
         <div class="container">
             <h2>User Info</h2>
@@ -96,48 +139,7 @@
             </table>
         </div>
 
-        <%--button MAKE ORDER / FIND PESSENGER--%>
-        <c:if test="${user.active == false}">
-            <c:if test="${user.homeAddress != null}">
-                <h4 class="text-left"><a href="${contextPath}/order/make">Make order</a></h4>
-            </c:if>
 
-            <c:if test="${user.car != null}">
-                <h4 class="text-left"><a href="${contextPath}/order/get/all-new">Find passenger</a></h4>
-            </c:if>
-        </c:if>
-
-        <c:if test="${user.active == true}">
-            <c:if test="${user.homeAddress != null}">
-                <h4 class="text-left" data-toggle="tooltip" title="You have active orders now!"
-                    style="color:grey">Make order</h4>
-            </c:if>
-            <c:if test="${user.car != null}">
-                <h4 class="text-left" data-toggle="tooltip" title="You have active orders now!"
-                    style="color:grey">Find passenger</h4>
-            </c:if>
-        </c:if>
-
-        <%--button SHOW HISTORY--%>
-        <h4 class="text-left">
-            <a href="${contextPath}/order/get/all">Show history
-                <span class="badge">${user.quantityOrders}</span></a>
-        </h4>
-
-        <%--button SHOW LAST ORDER--%>
-        <c:if test="${user.lastOrderId != null}">
-            <h4 class="text-left">
-                <a href="${contextPath}/order/get?id=${user.lastOrderId}">Show last order</a>
-            </h4>
-        </c:if>
-        <c:if test="${user.lastOrderId == null}">
-            <h4 class="text-left" data-toggle="tooltip" title="You don't have any orders!"
-                style="color:grey">Show last order</h4>
-        </c:if>
-
-        <%--button SHOW MAP--%>
-        <h4 class="text-left" data-toggle="tooltip" title="Please make me!"
-            style="color:grey">Show map</h4>
 
     </c:if>
 

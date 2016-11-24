@@ -111,8 +111,6 @@ public class ApplicationController {
     public String makeOrder(@ModelAttribute("orderForm") Order orderForm,
                             Model model, Principal principal, HttpServletRequest req) {
 
-        model.addAttribute("orderForm", new Order());
-
         User passenger = userService.getByUserphone(principal.getName());
         model.addAttribute("currentUser", passenger);
 
@@ -121,8 +119,11 @@ public class ApplicationController {
 
         if (req.getParameter("id") != null) {
             Order copyOrder = userService.getOrderById(Long.parseLong(req.getParameter("id")));
-            model.addAttribute("copyOrder", copyOrder);
+            model.addAttribute("addressFrom", copyOrder.getFrom());
+            model.addAttribute("addressTo", copyOrder.getTo());
         }
+
+        model.addAttribute("orderForm", new Order());
 
         return "make_order";
     }
@@ -138,6 +139,7 @@ public class ApplicationController {
         if (bindingResult.hasErrors())
             return "make_order";
 
+        orderForm.setId(null);
         userService.saveNewOrder(orderForm, user);
         model.addAttribute("message", "Success! Your order id=" + orderForm.getId() + " was created.");
 
@@ -166,6 +168,10 @@ public class ApplicationController {
 
         User user = userService.getByUserphone(principal.getName());
         model.addAttribute("currentUser", user);
+
+        boolean passenger = user.getHomeAddress() != null;
+        Map<Long, User> usersInOrders = userService.getMapUsersFromUserOrders(orders, passenger);
+        model.addAttribute("mapUsers", usersInOrders);
 
         return "history";
     }
@@ -237,6 +243,28 @@ public class ApplicationController {
         model.addAttribute("passenger", userService.getById(cancelledOrder.getIdPassenger()));
         model.addAttribute("driver", userService.getById(cancelledOrder.getIdDriver()));
         model.addAttribute("order", cancelledOrder);
+
+        return "order_info";
+    }
+
+    @RequestMapping(value = "/order/close", method = RequestMethod.GET)
+    public String closeOrder(Model model, Principal principal, HttpServletRequest req) {
+
+        User user = userService.getByUserphone(principal.getName());
+        Order closedOrder = null;
+        try {
+            closedOrder = userService.closeOrder(Long.parseLong(req.getParameter("id")), user);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", e.getMessage());
+            return "welcome";
+        }
+
+        model.addAttribute("currentUser", user);
+        model.addAttribute("passenger", userService.getById(closedOrder.getIdPassenger()));
+        model.addAttribute("driver", userService.getById(closedOrder.getIdDriver()));
+        model.addAttribute("order", closedOrder);
 
         return "order_info";
     }

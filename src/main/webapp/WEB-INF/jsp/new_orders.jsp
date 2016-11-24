@@ -47,12 +47,11 @@
     <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
-    <h4><a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
-
     <form id="logoutForm" method="POST" action="${contextPath}/logout">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
-    <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a></h4>
+    <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a> |
+        <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
 
     <h2>CURRENT NEW ORDERS</h2>
 

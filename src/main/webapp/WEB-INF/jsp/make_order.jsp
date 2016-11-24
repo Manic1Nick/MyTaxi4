@@ -5,7 +5,8 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="user" value="${currentUser}"/>
 <c:set var="lastOrder" value="${lastOrder}"/>
-<c:set var="copyOrder" value="${copyOrder}"/>
+<c:set var="addressFrom" value="${addressFrom}"/>
+<c:set var="addressTo" value="${addressTo}"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,12 +37,11 @@
     <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
-    <h4><a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
-
     <form id="logoutForm" method="POST" action="${contextPath}/logout">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
-    <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a></h4>
+    <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a> |
+        <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
 
     <%--orderChange FROM--%>
     <script>
@@ -126,33 +126,33 @@
 
         <spring:bind path="from.country">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="from.country" class="form-control input-sm"
+                <form:input type="text" path="from.country" class="form-control"
                             placeholder="Fromcountry" id="Fromcountry"
-                            autofocus="true" value="${copyOrder.from.country}"/>
+                            autofocus="true" value="${addressFrom.country}"/>
                 <form:errors path="from.country"/>
             </div>
         </spring:bind>
         <spring:bind path="from.city">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="from.city" class="form-control input-sm"
+                <form:input type="text" path="from.city" class="form-control"
                             placeholder="Fromcity" id="Fromcity"
-                            autofocus="true" value="${copyOrder.from.city}"/>
+                            autofocus="true" value="${addressFrom.city}"/>
                 <form:errors path="from.city"/>
             </div>
         </spring:bind>
         <spring:bind path="from.street">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="from.street" class="form-control input-sm"
+                <form:input type="text" path="from.street" class="form-control"
                             placeholder="Fromstreet" id="Fromstreet"
-                            autofocus="true" value="${copyOrder.from.street}"/>
+                            autofocus="true" value="${addressFrom.street}"/>
                 <form:errors path="from.street"/>
             </div>
         </spring:bind>
         <spring:bind path="from.houseNum">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="from.houseNum" class="form-control input-sm"
+                <form:input type="text" path="from.houseNum" class="form-control"
                             placeholder="Fromnumber" id="Fromnumber"
-                            autofocus="true" value="${copyOrder.from.houseNum}"/>
+                            autofocus="true" value="${addressFrom.houseNum}"/>
                 <form:errors path="from.houseNum"/>
             </div>
         </spring:bind>
@@ -175,33 +175,33 @@
 
         <spring:bind path="to.country">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="to.country" class="form-control input-sm"
+                <form:input type="text" path="to.country" class="form-control"
                             placeholder="Tocountry" id="Tocountry"
-                            autofocus="true" value="${copyOrder.to.country}"/>
+                            autofocus="true" value="${addressTo.country}"/>
                 <form:errors path="to.country"/>
             </div>
         </spring:bind>
         <spring:bind path="to.city">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="to.city" class="form-control input-sm"
+                <form:input type="text" path="to.city" class="form-control"
                             placeholder="Tocity" id="Tocity"
-                            autofocus="true" value="${copyOrder.to.city}"/>
+                            autofocus="true" value="${addressTo.city}"/>
                 <form:errors path="to.city"/>
             </div>
         </spring:bind>
         <spring:bind path="to.street">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="to.street" class="form-control input-sm"
+                <form:input type="text" path="to.street" class="form-control"
                             placeholder="Tostreet" id="Tostreet"
-                            autofocus="true" value="${copyOrder.to.street}"/>
+                            autofocus="true" value="${addressTo.street}"/>
                 <form:errors path="to.street"/>
             </div>
         </spring:bind>
         <spring:bind path="to.houseNum">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="to.houseNum" class="form-control input-sm"
+                <form:input type="text" path="to.houseNum" class="form-control"
                             placeholder="Tonumber" id="Tonumber"
-                            autofocus="true" value="${copyOrder.to.houseNum}"/>
+                            autofocus="true" value="${addressTo.houseNum}"/>
                 <form:errors path="to.houseNum"/>
             </div>
         </spring:bind>

@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveNewOrder(Order order, User user) throws InputDataWrongException {
+        order.setId(null);
         order.setOrderStatus(OrderStatus.NEW);
         order.setTimeCreate(new Date());
         order.setIdPassenger(user.getId());
@@ -182,14 +183,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Map<Long, User> getMapUsersFromUserOrders(List<Order> orders, boolean passenger) {
+
+        Map<Long, User> users = new HashMap<>();
+        for (Order order : orders) {
+            User user = passenger ? getById(order.getIdDriver()) : getById(order.getIdPassenger());
+            users.put(order.getId(), user);
+        }
+
+        return users;
+    }
+
+    @Override
     public Order takeOrderByDriver(Long orderId, User user)
             throws OrderNotFoundException, WrongStatusOrderException {
 
         Order order = orderRepository.findById(orderId);
         if (order == null)
             throw new OrderNotFoundException("Order not found in data base");
+
         else if (user.isActive())
             throw new OrderNotFoundException("You have active orders now");
+
         else if (order.getOrderStatus() != OrderStatus.NEW)
             throw new WrongStatusOrderException("This order has wrong status (not NEW)");
 

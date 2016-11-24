@@ -2,7 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
-<c:set var="list" value="${listOrders}"/>
+<c:set var="listOrders" value="${listOrders}"/>
+<c:set var="mapUsers" value="${mapUsers}"/>
 <c:set var="currentUser" value="${currentUser}"/>
 
 <!DOCTYPE html>
@@ -61,12 +62,11 @@
     <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
-    <h4><a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
-
     <form id="logoutForm" method="POST" action="${contextPath}/logout">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
-    <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a></h4>
+    <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a> |
+        <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
 
     <h2>USER HISTORY</h2>
 
@@ -81,8 +81,8 @@
                 <th>Distance, km</th>
                 <th>Price, uah</th>
                 <th>
-                    <c:if test="${currentUser.homeAddress != null}">Driver ID</c:if>
-                    <c:if test="${currentUser.car != null}">Passenger ID</c:if>
+                    <c:if test="${currentUser.homeAddress != null}">Driver</c:if>
+                    <c:if test="${currentUser.car != null}">Passenger</c:if>
                 </th>
                 <th>Show info</th>
                 <c:if test="${currentUser.homeAddress != null}">
@@ -92,7 +92,7 @@
             </thead>
 
             <tbody>
-            <c:forEach items="${list}" var="order">
+            <c:forEach items="${listOrders}" var="order">
                 <tr>
                     <td><c:out value="${order.id}" /></td>
                     <td><c:out value="${order.orderStatus}" /></td>
@@ -108,12 +108,14 @@
                     <td><c:out value="${order.distance}" /></td>
                     <td><c:out value="${order.price}" /></td>
                     <td>
-                        <c:if test="${currentUser.homeAddress != null}">
-                            <c:out value="${order.idDriver}" />
+                        <c:if test="${order.idDriver != null}">
+                            <c:out value="${mapUsers[order.id].username},
+                                          ${mapUsers[order.id].userphone}" />
                         </c:if>
-                        <c:if test="${currentUser.car != null}">
-                            <c:out value="${order.idPassenger}" />
+                        <c:if test="${order.idDriver == null}">
+                            <c:out value="no driver" />
                         </c:if>
+
                     </td>
                     <td>
                         <a href="${contextPath}/order/get?id=${order.id}">INFO</a>

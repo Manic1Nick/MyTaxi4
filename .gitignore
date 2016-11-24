@@ -2,4 +2,6 @@
 *.class
 *.iml
 
+lib/
+
 target/
