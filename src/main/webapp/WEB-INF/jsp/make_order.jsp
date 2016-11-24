@@ -33,6 +33,16 @@
 
 <div class="container">
 
+    <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+    <h4><a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
+
+    <form id="logoutForm" method="POST" action="${contextPath}/logout">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    </form>
+    <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a></h4>
+
     <%--orderChange FROM--%>
     <script>
         function fromCurrentLocation() {
@@ -89,6 +99,12 @@
         </script>
     </c:if>
 
+    <%--<c:if test="${copyOrder.distance != null}">
+        <div class="alert alert-info">
+            Distance: <strong>${copyOrder.distance}, km</strong>
+            Price: <strong>${copyOrder.price}, uah</strong>
+        </div>
+    </c:if>--%>
 
     <form:form method="POST" modelAttribute="orderForm" class="form-signin">
 
@@ -102,10 +118,7 @@
             <ul class="dropdown-menu">
                 <h4><li><a onclick="fromCurrentLocation()">Use your current location</a></li></h4>
                 <h4><li><a onclick="fromHomeAddress()">Use your home address</a></li></h4>
-                <c:if test="${lastOrder.from == null}">
-                    <h4><li class="disabled"><a onclick="fromLastOrder()">Use your last order</a></li></h4>
-                </c:if>
-                <c:if test="${lastOrder.from != null}">
+                <c:if test="${lastOrder != null}">
                     <h4><li><a onclick="fromLastOrder()">Use your last order</a></li></h4>
                 </c:if>
             </ul>
@@ -113,7 +126,7 @@
 
         <spring:bind path="from.country">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="from.country" class="form-control"
+                <form:input type="text" path="from.country" class="form-control input-sm"
                             placeholder="Fromcountry" id="Fromcountry"
                             autofocus="true" value="${copyOrder.from.country}"/>
                 <form:errors path="from.country"/>
@@ -121,7 +134,7 @@
         </spring:bind>
         <spring:bind path="from.city">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="from.city" class="form-control"
+                <form:input type="text" path="from.city" class="form-control input-sm"
                             placeholder="Fromcity" id="Fromcity"
                             autofocus="true" value="${copyOrder.from.city}"/>
                 <form:errors path="from.city"/>
@@ -129,7 +142,7 @@
         </spring:bind>
         <spring:bind path="from.street">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="from.street" class="form-control"
+                <form:input type="text" path="from.street" class="form-control input-sm"
                             placeholder="Fromstreet" id="Fromstreet"
                             autofocus="true" value="${copyOrder.from.street}"/>
                 <form:errors path="from.street"/>
@@ -137,7 +150,7 @@
         </spring:bind>
         <spring:bind path="from.houseNum">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="from.houseNum" class="form-control"
+                <form:input type="text" path="from.houseNum" class="form-control input-sm"
                             placeholder="Fromnumber" id="Fromnumber"
                             autofocus="true" value="${copyOrder.from.houseNum}"/>
                 <form:errors path="from.houseNum"/>
@@ -154,10 +167,7 @@
             <ul class="dropdown-menu">
                 <h4><li><a onclick="toCurrentLocation()">Use your current location</a></li></h4>
                 <h4><li><a onclick="toHomeAddress()">Use your home address</a></li></h4>
-                <c:if test="${lastOrder.to == null}">
-                    <h4><li class="disabled"><a onclick="toLastOrder()">Use your last order</a></li></h4>
-                </c:if>
-                <c:if test="${lastOrder.to != null}">
+                <c:if test="${lastOrder != null}">
                     <h4><li><a onclick="toLastOrder()">Use your last order</a></li></h4>
                 </c:if>
             </ul>
@@ -165,7 +175,7 @@
 
         <spring:bind path="to.country">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="to.country" class="form-control"
+                <form:input type="text" path="to.country" class="form-control input-sm"
                             placeholder="Tocountry" id="Tocountry"
                             autofocus="true" value="${copyOrder.to.country}"/>
                 <form:errors path="to.country"/>
@@ -173,7 +183,7 @@
         </spring:bind>
         <spring:bind path="to.city">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="to.city" class="form-control"
+                <form:input type="text" path="to.city" class="form-control input-sm"
                             placeholder="Tocity" id="Tocity"
                             autofocus="true" value="${copyOrder.to.city}"/>
                 <form:errors path="to.city"/>
@@ -181,7 +191,7 @@
         </spring:bind>
         <spring:bind path="to.street">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="to.street" class="form-control"
+                <form:input type="text" path="to.street" class="form-control input-sm"
                             placeholder="Tostreet" id="Tostreet"
                             autofocus="true" value="${copyOrder.to.street}"/>
                 <form:errors path="to.street"/>
@@ -189,7 +199,7 @@
         </spring:bind>
         <spring:bind path="to.houseNum">
             <div class="form-group ${status.error ? 'has-error' : ''}">
-                <form:input type="text" path="to.houseNum" class="form-control"
+                <form:input type="text" path="to.houseNum" class="form-control input-sm"
                             placeholder="Tonumber" id="Tonumber"
                             autofocus="true" value="${copyOrder.to.houseNum}"/>
                 <form:errors path="to.houseNum"/>

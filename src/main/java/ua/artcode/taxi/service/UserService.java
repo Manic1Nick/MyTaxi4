@@ -1,6 +1,8 @@
 package ua.artcode.taxi.service;
 
 import ua.artcode.taxi.exception.InputDataWrongException;
+import ua.artcode.taxi.exception.OrderNotFoundException;
+import ua.artcode.taxi.exception.WrongStatusOrderException;
 import ua.artcode.taxi.model.Address;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.OrderStatus;
@@ -24,6 +26,7 @@ public interface UserService {
     Order getLastOrder(String userphone);
     Order getOrderById(Long id);
     Order updateOrder(Long id, Order newOrder);
+    Order calculateOrder(Order baseOrder) throws InputDataWrongException;
 
     List<Order> getListOrdersOfUser(String userphone);
     List<Order> getListOrdersByOrderStatus(OrderStatus orderStatus);
@@ -34,5 +37,8 @@ public interface UserService {
 
     Address getUserLocation();
 
-    Order takeOrderByDriver(Long orderId, User driver);
+    Order takeOrderByDriver(Long orderId, User driver)
+            throws OrderNotFoundException, WrongStatusOrderException;
+    Order cancelOrder(Long orderId, User user) throws OrderNotFoundException, WrongStatusOrderException;
+    Order closeOrder(Long orderId, User user) throws OrderNotFoundException, WrongStatusOrderException;
 }

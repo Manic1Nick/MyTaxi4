@@ -4,6 +4,7 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="list" value="${listOrders}"/>
 <c:set var="map" value="${mapDistances}"/>
+<c:set var="currentUser" value="${currentUser}"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -69,9 +70,12 @@
             </tr>
             </thead>
             <tbody>
+
             <c:forEach items="${list}" var="order">
+                <c:set var="id" value="${order.id}"/>
+
                 <tr>
-                    <td><c:out value="${order.id}" /></td>
+                    <td><c:out value="${id}" /></td>
                     <td><c:out value="${order.orderStatus}" /></td>
                     <td><c:out value="${order.timeCreate}" /></td>
                     <td><c:out value="${order.to.country},
@@ -79,15 +83,20 @@
                                     ${order.to.street},
                                     ${order.to.houseNum}" /></td>
                     <td><c:out value="${order.price}" /></td>
-
-                    <c:set var="id" value="${order.id}"/>
                     <td><c:out value="${map[id]}" /></td>
+                    <td>
+                        <a href="${contextPath}/order/get?id=${id}">INFO</a>
+                    </td>
 
                     <td>
-                        <a href="${contextPath}/order/get?id=${order.id}">INFO</a>
-                    </td>
-                    <td>
-                        <a href="${contextPath}/order/take?id=${order.id}">TAKE</a>
+                        <c:if test="${currentUser.active == false}">
+                            <a href="${contextPath}/order/take?id=${id}">TAKE</a>
+                        </c:if>
+                        <c:if test="${currentUser.active == true}">
+                            <h5 class="text-left"
+                                data-toggle="tooltip" title="You have active orders now!"
+                                style="color:grey">TAKE</h5>
+                        </c:if>
                     </td>
                 </tr>
             </c:forEach>

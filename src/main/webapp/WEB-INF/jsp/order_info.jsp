@@ -32,15 +32,38 @@
 
     <c:if test="${order != null}">
 
-        <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
-        <h4><a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
-
         <form id="logoutForm" method="POST" action="${contextPath}/logout">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
-        <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a></h4>
+        <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
+
+        <h4>
+            <a onclick="document.forms['logoutForm'].submit()">Logout</a> |
+
+            <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a> |
+
+            <a href="${contextPath}/order/get/all">Show history
+                <span class="badge">${currentUser.quantityOrders}</span></a> |
+
+            <c:if test="${currentUser.lastOrderId != null}">
+                <c:if test="${currentUser.lastOrderId == order.id}">
+                    <a data-toggle="tooltip" title="Your last order is open now!"
+                        style="color:grey">Show last order</a>
+                </c:if>
+                <c:if test="${currentUser.lastOrderId != order.id}">
+                    <a href="${contextPath}/order/get?id=${currentUser.lastOrderId}">
+                        Show last order</a>
+                </c:if>
+            </c:if>
+            <c:if test="${currentUser.lastOrderId == null}">
+                <a data-toggle="tooltip" title="You don't have any orders!"
+                    style="color:grey">Show last order</a>
+            </c:if> |
+
+            <a data-toggle="tooltip" title="Please make me!" style="color:grey">Show map</a>
+        </h4>
 
         <div class="container">
             <h2>Order Info</h2>
@@ -95,6 +118,10 @@
                         <td>Driver</td>
                         <td>${driver.username}, ${driver.userphone}</td>
                     </tr>
+                    <tr>
+                        <td>Car</td>
+                        <td>${driver.car.type}, ${driver.car.model}, ${driver.car.number}</td>
+                    </tr>
                 </c:if>
                 <tr>
                     <td>Distance, km</td>
@@ -108,16 +135,77 @@
             </table>
         </div>
 
-        <h4 class="text-left"><a href="${contextPath}/order/make?id=${order.id}">
-            Copy order as new</a></h4>
-        <h4 class="text-left"><a href="${contextPath}/order/get/all">
-            Show history
-            <span class="badge">${currentUser.quantityOrders}</span></a></h4>
-        <h4 class="text-left"><a href="${contextPath}/order/get?id=${currentUser.lastOrderId}">
-            Show last order</a></h4>
-        <h4 class="text-left"><a href="${contextPath}/map">
-            Show map</a></h4>
+        <%--button COPY ORDER AS NEW--%>
+        <c:if test="${currentUser.homeAddress != null}">
+            <c:if test="${currentUser.active == false}">
+                <a href="${contextPath}/order/make?id=${order.id}" style="color:white"
+                   role="button" class="btn btn-danger active btn-lg">MAKE</a>
+            </c:if>
+            <c:if test="${currentUser.active == true}">
+                <a href="${contextPath}/order/make?id=${order.id}" style="color:white"
+                   role="button" class="btn btn-danger disabled btn-lg">MAKE</a>
+            </c:if>
+        </c:if>
 
+        <%--button TAKE THIS ORDER--%>
+        <c:if test="${currentUser.car != null}">
+            <c:if test="${currentUser.active == false}">
+                <c:if test="${order.orderStatus == 'NEW'}">
+                    <a href="${contextPath}/order/take?id=${order.id}" style="color:white"
+                       role="button" class="btn btn-danger active btn-lg">TAKE</a>
+                </c:if>
+                <c:if test="${order.orderStatus != 'NEW'}">
+                    <a href="${contextPath}/order/take?id=${order.id}" style="color:white"
+                       role="button" class="btn btn-danger disabled btn-lg">TAKE</a>
+                </c:if>
+            </c:if>
+            <c:if test="${currentUser.active == true}">
+                <a href="${contextPath}/order/take?id=${order.id}" style="color:white"
+                   role="button" class="btn btn-danger disabled btn-lg">TAKE</a>
+            </c:if>
+        </c:if>
+
+        <%--button CANCEL ORDER--%>
+        <c:if test="${currentUser.lastOrderId == order.id}">
+            <c:if test="${order.orderStatus == 'NEW'}">
+                <a href="${contextPath}/order/cancel?id=${order.id}" style="color:white"
+                   role="button" class="btn btn-warning active btn-lg">CANCEL</a>
+            </c:if>
+            <c:if test="${order.orderStatus == 'IN_PROGRESS'}">
+                <a href="${contextPath}/order/cancel?id=${order.id}" style="color:white"
+                   role="button" class="btn btn-warning active btn-lg">CANCEL</a>
+            </c:if>
+            <c:if test="${order.orderStatus == 'CANCELLED'}">
+                <a href="${contextPath}/order/cancel?id=${order.id}" style="color:white"
+                   role="button" class="btn btn-warning disabled btn-lg">CANCEL</a>
+            </c:if>
+            <c:if test="${order.orderStatus == 'CLOSED'}">
+                <a href="${contextPath}/order/cancel?id=${order.id}" style="color:white"
+                   role="button" class="btn btn-warning disabled btn-lg">CANCEL</a>
+            </c:if>
+        </c:if>
+
+        <c:if test="${currentUser.lastOrderId != order.id}">
+            <a href="${contextPath}/order/cancel?id=${order.id}" style="color:white"
+               role="button" class="btn btn-warning disabled btn-lg">CANCEL</a>
+        </c:if>
+
+
+        <%--button CLOSE ORDER--%>
+        <c:if test="${order.orderStatus == 'IN_PROGRESS'}">
+            <c:if test="${currentUser.lastOrderId == order.id}">
+                <a href="${contextPath}/order/close?id=${order.id}" style="color:white"
+                   role="button" class="btn btn-success active btn-lg">CLOSE</a>
+            </c:if>
+            <c:if test="${currentUser.lastOrderId != order.id}">
+                <a href="${contextPath}/order/close?id=${order.id}" style="color:white"
+                   role="button" class="btn btn-success disabled btn-lg">CLOSE</a>
+            </c:if>
+        </c:if>
+        <c:if test="${order.orderStatus != 'IN_PROGRESS'}">
+            <a href="${contextPath}/order/close?id=${order.id}" style="color:white"
+               role="button" class="btn btn-success disabled btn-lg">CLOSE</a>
+        </c:if>
     </c:if>
 
 </div>

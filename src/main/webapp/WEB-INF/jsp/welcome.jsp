@@ -28,11 +28,13 @@
 <body>
 <div class="container">
 
-    <c:if test="${pageContext.request.userPrincipal.name != null}">
+    <script>
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
 
-        <form id="logoutForm" method="POST" action="${contextPath}/logout">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
+    <c:if test="${pageContext.request.userPrincipal.name != null}">
 
         <c:if test="${message != null}">
             <div class="alert alert-success">
@@ -41,6 +43,9 @@
             </div>
         </c:if>
 
+        <form id="logoutForm" method="POST" action="${contextPath}/logout">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
         <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a></h4>
 
         <div class="container">
@@ -51,6 +56,7 @@
                     <td>ID</td>
                     <td>${user.id}</td>
                 </tr>
+
                 <c:if test="${user.homeAddress != null}">
                     <tr>
                         <td>Identifier</td>
@@ -58,10 +64,13 @@
                     </tr>
                     <tr>
                         <td>Home address</td>
-                        <td>${user.homeAddress.country}, ${user.homeAddress.city},
-                                ${user.homeAddress.street}, ${user.homeAddress.houseNum}</td>
+                        <td>${user.homeAddress.country},
+                            ${user.homeAddress.city},
+                            ${user.homeAddress.street},
+                            ${user.homeAddress.houseNum}</td>
                     </tr>
                 </c:if>
+
                 <c:if test="${user.car != null}">
                     <tr>
                         <td>Identifier</td>
@@ -69,7 +78,9 @@
                     </tr>
                     <tr>
                         <td>Car</td>
-                        <td>${user.car.type}, ${user.car.model}, ${user.car.number}</td>
+                        <td>${user.car.type},
+                            ${user.car.model},
+                            ${user.car.number}</td>
                     </tr>
                 </c:if>
 
@@ -81,26 +92,52 @@
                     <td>Name</td>
                     <td>${user.username}</td>
                 </tr>
-
                 </tbody>
             </table>
         </div>
 
-        <c:if test="${user.homeAddress != null}">
-            <h4 class="text-left"><a href="${contextPath}/order/make">Make order</a></h4>
+        <%--button MAKE ORDER / FIND PESSENGER--%>
+        <c:if test="${user.active == false}">
+            <c:if test="${user.homeAddress != null}">
+                <h4 class="text-left"><a href="${contextPath}/order/make">Make order</a></h4>
+            </c:if>
+
+            <c:if test="${user.car != null}">
+                <h4 class="text-left"><a href="${contextPath}/order/get/all-new">Find passenger</a></h4>
+            </c:if>
         </c:if>
 
-        <c:if test="${user.car != null}">
-            <h4 class="text-left"><a href="${contextPath}/order/get/all-new">Find passenger</a></h4>
+        <c:if test="${user.active == true}">
+            <c:if test="${user.homeAddress != null}">
+                <h4 class="text-left" data-toggle="tooltip" title="You have active orders now!"
+                    style="color:grey">Make order</h4>
+            </c:if>
+            <c:if test="${user.car != null}">
+                <h4 class="text-left" data-toggle="tooltip" title="You have active orders now!"
+                    style="color:grey">Find passenger</h4>
+            </c:if>
         </c:if>
 
+        <%--button SHOW HISTORY--%>
         <h4 class="text-left">
             <a href="${contextPath}/order/get/all">Show history
                 <span class="badge">${user.quantityOrders}</span></a>
         </h4>
 
-        <h4 class="text-left"><a href="${contextPath}/order/get?id=${user.lastOrderId}">Show last order</a></h4>
-        <h4 class="text-left"><a href="${contextPath}/map">Show map</a></h4>
+        <%--button SHOW LAST ORDER--%>
+        <c:if test="${user.lastOrderId != null}">
+            <h4 class="text-left">
+                <a href="${contextPath}/order/get?id=${user.lastOrderId}">Show last order</a>
+            </h4>
+        </c:if>
+        <c:if test="${user.lastOrderId == null}">
+            <h4 class="text-left" data-toggle="tooltip" title="You don't have any orders!"
+                style="color:grey">Show last order</h4>
+        </c:if>
+
+        <%--button SHOW MAP--%>
+        <h4 class="text-left" data-toggle="tooltip" title="Please make me!"
+            style="color:grey">Show map</h4>
 
     </c:if>
 

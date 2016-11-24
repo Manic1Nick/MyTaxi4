@@ -30,4 +30,5 @@ public class OrderValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "to.street", "NotEmpty");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "to.houseNum", "NotEmpty");
     }
+
 }

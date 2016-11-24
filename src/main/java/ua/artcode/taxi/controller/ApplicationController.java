@@ -79,7 +79,7 @@ public class ApplicationController {
 
         userService.saveNewUser(userForm);
         securityService.autologin(userForm.getUserphone(), userForm.getPasswordConfirm());
-        model.addAttribute("message", "Welcome, " + userForm.getUsername());
+        model.addAttribute("message", "Welcome, " + userForm.getUsername() + " :)");
 
         return "redirect:/welcome";
     }
@@ -102,7 +102,7 @@ public class ApplicationController {
 
         userService.saveNewUser(userForm);
         securityService.autologin(userForm.getUserphone(), userForm.getPasswordConfirm());
-        model.addAttribute("message", "Welcome, " + userForm.getUsername() + "!");
+        model.addAttribute("message", "Welcome, " + userForm.getUsername() + " :)");
 
         return "redirect:/welcome";
     }
@@ -173,24 +173,25 @@ public class ApplicationController {
     @RequestMapping(value = "/order/get/all-new", method = RequestMethod.GET)
     public String getAllNewOrders(Model model, Principal principal) {
 
-        User user = userService.getByUserphone(principal.getName());
+        User driver = userService.getByUserphone(principal.getName());
+        model.addAttribute("currentUser", driver);
 
-        if (user.getCar() == null) {
+        if (driver.getCar() == null) {
             model.addAttribute("error", "User is not driver.");
-            return "wellcome";
+            return "welcome";
         }
 
         List<Order> orders = userService.getListOrdersByOrderStatus(OrderStatus.NEW);
         try {
             Map<Long, Double> mapDistances =
-                    userService.createMapOrdersWithDistancesToDriver(orders, user.getCurrentAddress());
+                    userService.createMapOrdersWithDistancesToDriver(orders, driver.getCurrentAddress());
             model.addAttribute("listOrders", orders);
             model.addAttribute("mapDistances", mapDistances);
 
         } catch (InputDataWrongException e) {
             e.printStackTrace();
             model.addAttribute("error", "Google API error. Check your internet connection.");
-            return "wellcome";
+            return "welcome";
         }
 
         return "new_orders";
@@ -200,7 +201,15 @@ public class ApplicationController {
     public String takeOrderByDriver(Model model, Principal principal, HttpServletRequest req) {
 
         User user = userService.getByUserphone(principal.getName());
-        Order takenOrder = userService.takeOrderByDriver(Long.parseLong(req.getParameter("id")), user);
+        Order takenOrder = null;
+        try {
+            takenOrder = userService.takeOrderByDriver(Long.parseLong(req.getParameter("id")), user);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", e.getMessage());
+            return "welcome";
+        }
 
         model.addAttribute("currentUser", user);
         model.addAttribute("passenger", userService.getById(takenOrder.getIdPassenger()));
@@ -209,4 +218,50 @@ public class ApplicationController {
 
         return "order_info";
     }
+
+    @RequestMapping(value = "/order/cancel", method = RequestMethod.GET)
+    public String cancelOrder(Model model, Principal principal, HttpServletRequest req) {
+
+        User user = userService.getByUserphone(principal.getName());
+        Order cancelledOrder = null;
+        try {
+            cancelledOrder = userService.cancelOrder(Long.parseLong(req.getParameter("id")), user);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            model.addAttribute("error", e.getMessage());
+            return "welcome";
+        }
+
+        model.addAttribute("currentUser", user);
+        model.addAttribute("passenger", userService.getById(cancelledOrder.getIdPassenger()));
+        model.addAttribute("driver", userService.getById(cancelledOrder.getIdDriver()));
+        model.addAttribute("order", cancelledOrder);
+
+        return "order_info";
+    }
+
+    /*@RequestMapping(value = "/order/calculate", method = RequestMethod.POST)
+    public String calculateOrder(@ModelAttribute("orderForm") Order orderForm,
+                                 BindingResult bindingResult, Principal principal,
+                                 Model model, HttpServletRequest req) throws InputDataWrongException {
+
+        model.addAttribute("orderForm", new Order());
+
+        Address addressFrom = new Address(req.getParameter("addressFrom"));
+        Address addressTo = new Address(req.getParameter("addressTo"));
+        orderForm.setFrom(addressFrom);
+        orderForm.setTo(addressTo);
+
+        User user = userService.getByUserphone(principal.getName());
+        orderValidator.validate(orderForm, bindingResult);
+
+        if (bindingResult.hasErrors())
+            return "make_order";
+
+        Order testOrder = userService.calculateOrder(orderForm);
+        model.addAttribute("copyOrder", testOrder);
+
+        return "make_order";
+    }*/
 }

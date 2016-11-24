@@ -22,6 +22,7 @@ public class User {
 
     private Long lastOrderId;
     private int quantityOrders;
+    private boolean active;
 
     public User() {
     }
@@ -142,6 +143,14 @@ public class User {
 
     public void setQuantityOrders(int quantityOrders) {
         this.quantityOrders = quantityOrders;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

@@ -5,6 +5,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.artcode.taxi.exception.InputDataWrongException;
+import ua.artcode.taxi.exception.OrderNotFoundException;
+import ua.artcode.taxi.exception.WrongStatusOrderException;
 import ua.artcode.taxi.model.*;
 import ua.artcode.taxi.repository.OrderRepository;
 import ua.artcode.taxi.repository.RoleRepository;
@@ -55,6 +57,7 @@ public class UserServiceImpl implements UserService {
         user.setLastOrderId(order.getId());
         int quantityOrders = user.getQuantityOrders();
         user.setQuantityOrders(++quantityOrders);
+        user.setActive(true);
         userRepository.save(user);
     }
 
@@ -130,6 +133,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Order calculateOrder(Order baseOrder) throws InputDataWrongException {
+
+        int distance = calculateDistance(baseOrder.getFrom(), baseOrder.getTo());
+        baseOrder.setDistance(distance);
+        baseOrder.setPrice(calculatePrice(distance));
+
+        return baseOrder;
+    }
+
+    @Override
     public List<Order> getListOrdersOfUser(String userphone) {
         User user = userRepository.findByUserphone(userphone);
 
@@ -169,98 +182,86 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Order takeOrderByDriver(Long orderId, User user) {
+    public Order takeOrderByDriver(Long orderId, User user)
+            throws OrderNotFoundException, WrongStatusOrderException {
 
         Order order = orderRepository.findById(orderId);
+        if (order == null)
+            throw new OrderNotFoundException("Order not found in data base");
+        else if (user.isActive())
+            throw new OrderNotFoundException("You have active orders now");
+        else if (order.getOrderStatus() != OrderStatus.NEW)
+            throw new WrongStatusOrderException("This order has wrong status (not NEW)");
 
         order.setIdDriver(user.getId());
         order.setOrderStatus(OrderStatus.IN_PROGRESS);
         order.setTimeTaken(new Date());
-
-        /*if (checkOrdersOfUser(user, OrderStatus.IN_PROGRESS))
-            throw new DriverOrderActionException("Driver has orders IN_PROGRESS already");
-
-        if (inProgress == null) {
-            throw new OrderNotFoundException("Order not found in data base");
-
-        } else if (inProgress.getOrderStatus() != OrderStatus.NEW) {
-            throw new WrongStatusOrderException("This order has wrong status (not NEW)");
-        }*/
+        orderRepository.save(order);
 
         user.setLastOrderId(order.getId());
         int quantityOrders = user.getQuantityOrders();
         user.setQuantityOrders(++quantityOrders);
-        updateUser(user.getId(), user);
+        user.setActive(true);
+        userRepository.save(user);
 
-        return updateOrder(orderId, order);
+        return order;
     }
 
+    @Override
+    public Order cancelOrder(Long orderId, User user)
+            throws OrderNotFoundException, WrongStatusOrderException {
 
-    /*@Override
-    public Order cancelOrder(Long orderId) throws OrderNotFoundException, WrongStatusOrderException {
-
-        Order foundOrder = orderDao.findById(orderId);
-
-        if (foundOrder == null) {
+        Order order = orderRepository.findById(orderId);
+        if (order == null)
             throw new OrderNotFoundException("Order not found in data base");
 
-        } else if (foundOrder.getOrderStatus().equals(OrderStatus.CLOSED) ||
-                    foundOrder.getOrderStatus().equals(OrderStatus.CANCELLED)) {
-            throw new WrongStatusOrderException("This order has been CLOSED or CANCELLED already");
-        }
-        foundOrder.setOrderStatus(OrderStatus.CANCELLED);
-        foundOrder.setTimeCancelled(new Date());
+        else if (user.getCar() != null && order.getOrderStatus() != OrderStatus.IN_PROGRESS)
+            throw new WrongStatusOrderException(
+                    "You can cancelled orders only with status IN_PROGRESS");
 
-        return orderDao.update(foundOrder);
-    }*/
+        else if (user.getCar() != null && !order.getId().equals(user.getLastOrderId()))
+            throw new WrongStatusOrderException(
+                    "You can cancelled only your orders");
 
-    /*@Override
-    public Order closeOrder(String accessToken, Long orderId) throws OrderNotFoundException,
-            WrongStatusOrderException, DriverOrderActionException {
+        else if (user.getHomeAddress() != null &&
+                    (order.getOrderStatus() != OrderStatus.NEW &&
+                        order.getOrderStatus() != OrderStatus.IN_PROGRESS))
+            throw new WrongStatusOrderException(
+                    "You can cancelled orders only with status NEW or IN_PROGRESS");
 
-        User user = accessKeys.get(accessToken);
-        Order foundOrder = orderDao.findById(orderId);
+        order.setOrderStatus(OrderStatus.CANCELLED);
+        order.setTimeCancelled(new Date());
+        orderRepository.save(order);
 
-        if (foundOrder == null) {
+        makeUsersOfOrderDeactive(order);
+
+        return order;
+    }
+
+    @Override
+    public Order closeOrder(Long orderId, User user)
+            throws OrderNotFoundException, WrongStatusOrderException {
+
+        Order order = orderRepository.findById(orderId);
+        if (order == null)
             throw new OrderNotFoundException("Order not found in data base");
 
-        } else if (user.getIdentifier() == UserIdentifier.D && foundOrder.getIdDriver() <= 0) {
-            throw new DriverOrderActionException("This order is not your order");
+        else if (!order.getId().equals(user.getLastOrderId()))
+            throw new WrongStatusOrderException(
+                    "You can closed only your orders");
 
-        } else if (foundOrder.getOrderStatus() != OrderStatus.IN_PROGRESS) {
-            throw new WrongStatusOrderException("This order has wrong status (not IN_PROGRESS)");
-        }
+        else if (order.getOrderStatus() != OrderStatus.IN_PROGRESS)
+            throw new WrongStatusOrderException(
+                    "You can closed orders only with status IN_PROGRESS");
 
-        foundOrder.setOrderStatus(OrderStatus.CLOSED);
-        foundOrder.setTimeClosed(new Date());
+        order.setOrderStatus(OrderStatus.CLOSED);
+        order.setTimeClosed(new Date());
+        orderRepository.save(order);
 
-        return orderDao.update(foundOrder);
-    }*/
+        makeUsersOfOrderDeactive(order);
 
-    /*@Override
-    public Order takeOrder(String accessToken, Long orderId) throws OrderNotFoundException,
-            WrongStatusOrderException, DriverOrderActionException {
-
-        User user = accessKeys.get(accessToken);
-        Order inProgress = orderDao.findById(orderId);
-
-        if (checkOrdersOfUser(user, OrderStatus.IN_PROGRESS))
-            throw new DriverOrderActionException("Driver has orders IN_PROGRESS already");
-
-        if (inProgress == null) {
-            throw new OrderNotFoundException("Order not found in data base");
-
-        } else if (inProgress.getOrderStatus() != OrderStatus.NEW) {
-            throw new WrongStatusOrderException("This order has wrong status (not NEW)");
-        }
-
-        inProgress.setIdDriver(user.getId());
-        inProgress.setOrderStatus(OrderStatus.IN_PROGRESS);
-        inProgress.setTimeTaken(new Date());
-
-        return orderDao.update(inProgress);
-    }*/
-
+        return order;
+    }
 
 
     /*@Override
@@ -297,6 +298,20 @@ public class UserServiceImpl implements UserService {
     public Address getUserLocation() {
 
         return new Address(Constants.USER_LOCATION_PATH);
+    }
+
+    @Transactional
+    private void makeUsersOfOrderDeactive(Order order) {
+
+        User passenger = getById(order.getIdPassenger());
+        passenger.setActive(false);
+        userRepository.save(passenger);
+
+        User driver = getById(order.getIdDriver());
+        if (driver != null) {
+            driver.setActive(false);
+            userRepository.save(driver);
+        }
     }
 
     @Transactional

@@ -42,7 +42,7 @@
         });
     </script>
 
-    <c:set var="textOrder" value="
+    <%--<c:set var="textOrder" value="
 
     Order ID: ${order.id}
     Time create: ${order.timeCreate}
@@ -56,7 +56,7 @@
     Distance, km: ${order.distance}
     Price, uah: ${order.price}
 
-    "/>
+    "/>--%>
 
     <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -80,26 +80,14 @@
                 <th>Address TO</th>
                 <th>Distance, km</th>
                 <th>Price, uah</th>
-
                 <th>
-                    <c:if test="${currentUser.homeAddress != null}">
-                        Driver ID
-                    </c:if>
-                    <c:if test="${currentUser.car != null}">
-                        Passenger ID
-                    </c:if>
+                    <c:if test="${currentUser.homeAddress != null}">Driver ID</c:if>
+                    <c:if test="${currentUser.car != null}">Passenger ID</c:if>
                 </th>
-
                 <th>Show info</th>
-
-                <th>
-                    <c:if test="${currentUser.homeAddress != null}">
-                        Make new
-                    </c:if>
-                    <%--<c:if test="${currentUser.car != null}">
-                        Take order
-                    </c:if>--%>
-                </th>
+                <c:if test="${currentUser.homeAddress != null}">
+                    <th>Make new</th>
+                </c:if>
             </tr>
             </thead>
 
@@ -119,7 +107,6 @@
                                     ${order.to.houseNum}" /></td>
                     <td><c:out value="${order.distance}" /></td>
                     <td><c:out value="${order.price}" /></td>
-
                     <td>
                         <c:if test="${currentUser.homeAddress != null}">
                             <c:out value="${order.idDriver}" />
@@ -128,19 +115,21 @@
                             <c:out value="${order.idPassenger}" />
                         </c:if>
                     </td>
-
                     <td>
                         <a href="${contextPath}/order/get?id=${order.id}">INFO</a>
                     </td>
-
-                    <td>
-                        <c:if test="${currentUser.homeAddress != null}">
-                            <a href="${contextPath}/order/make?id=${order.id}">COPY</a>
-                        </c:if>
-                        <%--<c:if test="${currentUser.car != null}">
-                            <a href="${contextPath}/order/take?id=${order.id}">TAKE</a>
-                        </c:if>--%>
-                    </td>
+                    <c:if test="${currentUser.homeAddress != null}">
+                        <td>
+                            <c:if test="${currentUser.active == false}">
+                                <a href="${contextPath}/order/make?id=${order.id}">COPY</a>
+                            </c:if>
+                            <c:if test="${currentUser.active == true}">
+                                <h5 class="text-left"
+                                    data-toggle="tooltip" title="You have active orders now!"
+                                    style="color:grey">COPY</h5>
+                            </c:if>
+                        </td>
+                    </c:if>
                 </tr>
             </c:forEach>
            </tbody>
