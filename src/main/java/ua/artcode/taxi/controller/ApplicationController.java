@@ -111,6 +111,8 @@ public class ApplicationController {
     public String makeOrder(@ModelAttribute("orderForm") Order orderForm,
                             Model model, Principal principal, HttpServletRequest req) {
 
+        model.addAttribute("orderForm", new Order());
+
         User passenger = userService.getByUserphone(principal.getName());
         model.addAttribute("currentUser", passenger);
 
@@ -119,11 +121,11 @@ public class ApplicationController {
 
         if (req.getParameter("id") != null) {
             Order copyOrder = userService.getOrderById(Long.parseLong(req.getParameter("id")));
-            model.addAttribute("addressFrom", copyOrder.getFrom());
-            model.addAttribute("addressTo", copyOrder.getTo());
+            orderForm.setFrom(copyOrder.getFrom());
+            orderForm.setTo(copyOrder.getTo());
         }
 
-        model.addAttribute("orderForm", new Order());
+        model.addAttribute("orderForm", orderForm);
 
         return "make_order";
     }
@@ -133,17 +135,42 @@ public class ApplicationController {
                             BindingResult bindingResult, Principal principal,
                             Model model) throws InputDataWrongException {
 
-        User user = userService.getByUserphone(principal.getName());
+        User passenger = userService.getByUserphone(principal.getName());
         orderValidator.validate(orderForm, bindingResult);
 
-        if (bindingResult.hasErrors())
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("currentUser", passenger);
+            model.addAttribute("lastOrder", userService.getLastOrder(principal.getName()));
             return "make_order";
+        }
 
         orderForm.setId(null);
-        userService.saveNewOrder(orderForm, user);
+        userService.saveNewOrder(orderForm, passenger);
         model.addAttribute("message", "Success! Your order id=" + orderForm.getId() + " was created.");
 
         return "redirect:/welcome";
+    }
+
+    @RequestMapping(value = "/order/calculate", method = RequestMethod.GET)
+    public String calculateOrder(@ModelAttribute("orderForm") Order orderForm,
+                                 BindingResult bindingResult, Principal principal,
+                                 Model model) throws InputDataWrongException {
+
+        orderValidator.validate(orderForm, bindingResult);
+
+        //todo errors in make_order
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("currentUser", userService.getByUserphone(principal.getName()));
+            model.addAttribute("lastOrder", userService.getLastOrder(principal.getName()));
+            return "make_order";
+        }
+
+        Order testOrder = userService.calculateOrder(orderForm);
+
+        return "redirect:/order/make?distance=" + testOrder.getDistance() +
+                "&price=" + testOrder.getPrice() +
+                "&from=" + testOrder.getFrom().separateByCommas() +
+                "&to=" + testOrder.getTo().separateByCommas();
     }
 
     @RequestMapping(value = "/order/get", method = RequestMethod.GET)
@@ -217,7 +244,7 @@ public class ApplicationController {
             return "welcome";
         }
 
-        model.addAttribute("currentUser", user);
+        model.addAttribute("currentUser", userService.getByUserphone(principal.getName()));
         model.addAttribute("passenger", userService.getById(takenOrder.getIdPassenger()));
         model.addAttribute("driver", userService.getById(takenOrder.getIdDriver()));
         model.addAttribute("order", takenOrder);
@@ -239,7 +266,7 @@ public class ApplicationController {
             return "welcome";
         }
 
-        model.addAttribute("currentUser", user);
+        model.addAttribute("currentUser", userService.getByUserphone(principal.getName()));
         model.addAttribute("passenger", userService.getById(cancelledOrder.getIdPassenger()));
         model.addAttribute("driver", userService.getById(cancelledOrder.getIdDriver()));
         model.addAttribute("order", cancelledOrder);
@@ -261,35 +288,11 @@ public class ApplicationController {
             return "welcome";
         }
 
-        model.addAttribute("currentUser", user);
+        model.addAttribute("currentUser", userService.getByUserphone(principal.getName()));
         model.addAttribute("passenger", userService.getById(closedOrder.getIdPassenger()));
         model.addAttribute("driver", userService.getById(closedOrder.getIdDriver()));
         model.addAttribute("order", closedOrder);
 
         return "order_info";
     }
-
-    /*@RequestMapping(value = "/order/calculate", method = RequestMethod.POST)
-    public String calculateOrder(@ModelAttribute("orderForm") Order orderForm,
-                                 BindingResult bindingResult, Principal principal,
-                                 Model model, HttpServletRequest req) throws InputDataWrongException {
-
-        model.addAttribute("orderForm", new Order());
-
-        Address addressFrom = new Address(req.getParameter("addressFrom"));
-        Address addressTo = new Address(req.getParameter("addressTo"));
-        orderForm.setFrom(addressFrom);
-        orderForm.setTo(addressTo);
-
-        User user = userService.getByUserphone(principal.getName());
-        orderValidator.validate(orderForm, bindingResult);
-
-        if (bindingResult.hasErrors())
-            return "make_order";
-
-        Order testOrder = userService.calculateOrder(orderForm);
-        model.addAttribute("copyOrder", testOrder);
-
-        return "make_order";
-    }*/
 }

@@ -162,13 +162,13 @@ public class Address {
         return (int) (id ^ (id >>> 32));
     }
 
-    public String separateByCommas(Address address) {
+    public String separateByCommas() {
 
         return String.format("%s,%s,%s,%s",
-                address.getCountry(),
-                address.getCity(),
-                address.getStreet(),
-                address.getHouseNum());
+                this.getCountry(),
+                this.getCity(),
+                this.getStreet(),
+                this.getHouseNum());
     }
 
     /*private Location getLocationFromAddress(Address address) throws InputDataWrongException {
