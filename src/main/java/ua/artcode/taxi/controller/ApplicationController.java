@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import ua.artcode.taxi.exception.InputDataWrongException;
+import ua.artcode.taxi.model.Address;
 import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.OrderStatus;
 import ua.artcode.taxi.model.User;
@@ -17,6 +18,8 @@ import ua.artcode.taxi.validator.OrderValidator;
 import ua.artcode.taxi.validator.UserValidator;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -109,9 +112,8 @@ public class ApplicationController {
 
     @RequestMapping(value = "/order/make", method = RequestMethod.GET)
     public String makeOrder(@ModelAttribute("orderForm") Order orderForm,
-                            Model model, Principal principal, HttpServletRequest req) {
-
-        model.addAttribute("orderForm", new Order());
+                            Model model, Principal principal, BindingResult bindingResult,
+                            HttpServletRequest req) throws InputDataWrongException {
 
         User passenger = userService.getByUserphone(principal.getName());
         model.addAttribute("currentUser", passenger);
@@ -133,7 +135,7 @@ public class ApplicationController {
     @RequestMapping(value = "/order/make", method = RequestMethod.POST)
     public String makeOrder(@ModelAttribute("orderForm") Order orderForm,
                             BindingResult bindingResult, Principal principal,
-                            Model model) throws InputDataWrongException {
+                            Model model, HttpServletRequest req) throws InputDataWrongException {
 
         User passenger = userService.getByUserphone(principal.getName());
         orderValidator.validate(orderForm, bindingResult);
@@ -152,25 +154,24 @@ public class ApplicationController {
     }
 
     @RequestMapping(value = "/order/calculate", method = RequestMethod.GET)
-    public String calculateOrder(@ModelAttribute("orderForm") Order orderForm,
-                                 BindingResult bindingResult, Principal principal,
-                                 Model model) throws InputDataWrongException {
+    public void calculateOrder(HttpServletRequest req, HttpServletResponse resp)
+            throws InputDataWrongException, IOException {
 
-        orderValidator.validate(orderForm, bindingResult);
+        Order orderForm = new Order();
+        Address from = new Address(req.getParameter("addressFrom"));
+        Address to = new Address(req.getParameter("addressTo"));
 
-        //todo errors in make_order
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("currentUser", userService.getByUserphone(principal.getName()));
-            model.addAttribute("lastOrder", userService.getLastOrder(principal.getName()));
-            return "make_order";
+        orderForm.setFrom(from);
+        orderForm.setTo(to);
+
+        try {
+            Order newOrder = userService.calculateOrder(orderForm);
+            resp.getWriter().printf("DISTANCE: %s km, PRICE: %s uah",
+                    newOrder.getDistance(),
+                    newOrder.getPrice());
+        } catch (IOException e) {
+            resp.getWriter().print(e.getMessage());
         }
-
-        Order testOrder = userService.calculateOrder(orderForm);
-
-        return "redirect:/order/make?distance=" + testOrder.getDistance() +
-                "&price=" + testOrder.getPrice() +
-                "&from=" + testOrder.getFrom().separateByCommas() +
-                "&to=" + testOrder.getTo().separateByCommas();
     }
 
     @RequestMapping(value = "/order/get", method = RequestMethod.GET)

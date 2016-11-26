@@ -6,8 +6,6 @@
 <c:set var="order" value="${orderForm}"/>
 <c:set var="user" value="${currentUser}"/>
 <c:set var="lastOrder" value="${lastOrder}"/>
-<%--<c:set var="addressFrom" value="${addressFrom}"/>
-<c:set var="addressTo" value="${addressTo}"/>--%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -18,8 +16,6 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
     <title>Create new order</title>
 
@@ -95,19 +91,35 @@
 
     <%--calculate order for alert--%>
     <script>
-        $('#addresses').keyup(
-                function(){
-                    var from = $("#Fromcountry").val() + "," +
-                            $("#Fromcity").val() + "," +
-                            $("#Fromstreet").val() + "," +
-                            $("#Fromnumber").val();
-                    var to = $("#Tocountry").val() + "," +
-                            $("#Tocity").val() + "," +
-                            $("#Tostreet").val() + "," +
-                            $("#Tonumber").val();
-                    $("#calculateOrder").attr("href",
-                            "${contextPath}/order/calculate?from=" + from + "&to=" + to);
-                });
+        function calculateOrder() {
+            var addressFrom =
+                    $("#Fromcountry").val() + "," +
+                    $("#Fromcity").val() + "," +
+                    $("#Fromstreet").val() + "," +
+                    $("#Fromnumber").val();
+            var addressTo =
+                    $("#Tocountry").val() + "," +
+                    $("#Tocity").val() + "," +
+                    $("#Tostreet").val() + "," +
+                    $("#Tonumber").val();
+            $.ajax({
+                url: '/order/calculate',
+                type: 'GET',
+                data: {
+                    addressFrom : addressFrom,
+                    addressTo : addressTo
+                }
+
+            })
+                    .success(function (resp) {
+                        $("#calculateData").html(resp);
+                        $("#calculateInModal").modal('show');
+                    })
+                    .error(function (xhr, status) {
+                        $("#calculateData").html("Calculate error. Check your input data");
+                        $("#calculateInModal").modal('show');
+                    })
+        }
     </script>
 
     <%--MENU--%>
@@ -120,14 +132,23 @@
     <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a> |
         <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
 
-    <%--ALERT calculate distance & price--%>
-    <c:if test="${order.price > 0}">
-        <div class="alert alert-warning alert-dismissable fade in">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <h4 class="text-center">Distance: <strong>${order.distance} km, </strong>
-                Price: <strong>${order.price} uah</strong></h4>
+    <%--MODAL calculate distance & price--%>
+        <div class="modal fade" id="calculateInModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Calculate order:</h4>
+                    </div>
+                    <div class="modal-body" id="calculateData">
+                        <p><%--//ajax success content here.--%></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
-    </c:if>
 
     <%--FORM INPUT ADDRESSES--%>
     <form:form method="POST" modelAttribute="orderForm" class="form-signin" id="addresses">
@@ -235,7 +256,7 @@
     </form:form>
 
         <div style="text-align: center">
-            <a href="${contextPath}/order/calculate" role="button"
+            <a role="button" onclick="calculateOrder()"
                class="btn btn-warning active btn-lg" id="calculateOrder"
                style="color:white; width: 300px; margin: 0 auto;">Calculate order</a>
         </div>

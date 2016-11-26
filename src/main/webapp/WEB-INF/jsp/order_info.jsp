@@ -32,6 +32,7 @@
 
     <c:if test="${order != null}">
 
+        <%--MENU--%>
         <form id="logoutForm" method="POST" action="${contextPath}/logout">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
         </form>
@@ -40,13 +41,17 @@
         </form>
 
         <h4>
+        <%--LOGOUT--%>
             <a onclick="document.forms['logoutForm'].submit()">Logout</a> |
 
+        <%--RETURN TO MENU--%>
             <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a> |
 
+        <%--HISTORY--%>
             <a href="${contextPath}/order/get/all">Show history
                 <span class="badge">${currentUser.quantityOrders}</span></a> |
 
+        <%--LAST ORDER--%>
             <c:if test="${currentUser.lastOrderId != null}">
                 <c:if test="${currentUser.lastOrderId == order.id}">
                     <a data-toggle="tooltip" title="Your last order is open now!"
@@ -62,6 +67,7 @@
                     style="color:grey">Show last order</a>
             </c:if> |
 
+        <%--SHOW MAP--%>
             <a data-toggle="tooltip" title="Please make me!" style="color:grey">Show map</a>
         </h4>
 
