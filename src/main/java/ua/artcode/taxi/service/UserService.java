@@ -8,6 +8,7 @@ import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.OrderStatus;
 import ua.artcode.taxi.model.User;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -31,9 +32,11 @@ public interface UserService {
     List<Order> getListOrdersOfUser(String userphone);
     List<Order> getListOrdersByOrderStatus(OrderStatus orderStatus);
 
-    Map<Long, Double> createMapOrdersWithDistancesToDriver(
+    Map<Long, Double> createMapOrdersIdDistancesKmToUser(
             List<Order> orders, Address addressDriver)
             throws InputDataWrongException;
+    List<User> getListUsersFromDistancesToUser(int maxDistanceToUserInKm, User currentUser) throws InputDataWrongException;
+    List<User> getListUserFromUserIds(Collection<Long> userIds);
     Map<Long, User> getMapUsersFromUserOrders(List<Order> orders, boolean passenger);
 
     Address getUserLocation();

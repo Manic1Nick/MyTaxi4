@@ -26,7 +26,7 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
             "https://maps.googleapis.com/maps/api/directions/json?origin=place_id:%s&destination=place_id:%s&key=%s";
 
     public static final String GOOGLE_API_KEY =
-            "AIzaSyAw1tCKgkKOkkCaun42Em3kCf0R9Oo7tZY";
+            "AIzaSyD-KmQUcMJUpRzjthK1CvNtmYw3mLf9vzs";
 
     @Override
     public Location findLocation(String unformatted) throws InputDataWrongException {

@@ -98,7 +98,8 @@ public class User {
     }
 
     //todo get current user location
-    @Transient
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(referencedColumnName = "id")
     public Address getCurrentAddress() {
 
         return currentAddress;
@@ -151,6 +152,13 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String toShortViewJS() {
+
+        String nameAndPhone = "name: " + username + ", phone: " + userphone;
+
+        return car != null ? nameAndPhone + ",<br /> car: " + car.separateByCommas() : nameAndPhone;
     }
 
     @Override

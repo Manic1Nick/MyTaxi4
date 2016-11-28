@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<Long, Double> createMapOrdersWithDistancesToDriver(
+    public Map<Long, Double> createMapOrdersIdDistancesKmToUser(
             List<Order> orders, Address addressDriver)
             throws InputDataWrongException {
 
@@ -180,6 +180,47 @@ public class UserServiceImpl implements UserService {
         }
 
         return mapOfDistances;
+    }
+
+    @Override
+    public List<User> getListUsersFromDistancesToUser(
+                        int maxDistanceToUserInKm, User currentUser) throws InputDataWrongException {
+
+        Location locationCurrentUser = getLocationFromAddress(currentUser.getCurrentAddress());
+
+        List<User> users = new ArrayList<>();
+
+        if (currentUser.getHomeAddress() != null) { //current user is passenger
+            users = userRepository.findByActiveAndHomeAddress(
+                    false, //false = driver not active (find passenger)
+                    null); //home address = null for drivers
+
+        } else if (currentUser.getCar() != null) { //current user is driver
+            users = userRepository.findByActiveAndCar(
+                    true, //false = passenger active (find driver)
+                    null); //car = null for passengers
+        }
+
+        List<User> selectedUsers = new ArrayList<>();
+        for (User user : users) {
+            Location locationUser = getLocationFromAddress(user.getCurrentAddress());
+
+            int distanceInMeters = new Distance(locationUser, locationCurrentUser).calculateDistance();
+            if (distanceInMeters <= (maxDistanceToUserInKm * 1000))
+                selectedUsers.add(user);
+        }
+
+        return selectedUsers;
+    }
+
+    @Override
+    public List<User> getListUserFromUserIds(Collection<Long> userIds) {
+
+        List<User> users = new ArrayList<>();
+        for (Long userId : userIds) {
+            users.add(getById(userId));
+        }
+        return users;
     }
 
     @Override

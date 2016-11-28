@@ -4,19 +4,19 @@ public class Location {
 
     private String formattedAddress;
     private double lat;
-    private double lng;
+    private double lon;
     private String placeId;
 
-    public Location(String formattedAddress, double lat, double lng) {
+    public Location(String formattedAddress, double lat, double lon) {
         this.formattedAddress = formattedAddress;
         this.lat = lat;
-        this.lng = lng;
+        this.lon = lon;
     }
 
-    public Location(String formattedAddress, double lat, double lng, String placeId) {
+    public Location(String formattedAddress, double lat, double lon, String placeId) {
         this.formattedAddress = formattedAddress;
         this.lat = lat;
-        this.lng = lng;
+        this.lon = lon;
         this.placeId = placeId;
     }
 
@@ -36,12 +36,12 @@ public class Location {
         this.lat = lat;
     }
 
-    public double getLng() {
-        return lng;
+    public double getLon() {
+        return lon;
     }
 
-    public void setLng(double lng) {
-        this.lng = lng;
+    public void setLon(double lon) {
+        this.lon = lon;
     }
 
     public String getPlaceId() {
@@ -57,7 +57,7 @@ public class Location {
         return "Location{" +
                 "formattedAddress='" + formattedAddress + '\'' +
                 ", lat=" + lat +
-                ", lng=" + lng +
+                ", lon=" + lon +
                 ", placeId='" + placeId + '\'' +
                 '}';
     }

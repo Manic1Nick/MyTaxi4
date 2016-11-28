@@ -1,5 +1,6 @@
 package ua.artcode.taxi.controller;
 
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,10 +9,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import ua.artcode.taxi.exception.InputDataWrongException;
-import ua.artcode.taxi.model.Address;
-import ua.artcode.taxi.model.Order;
-import ua.artcode.taxi.model.OrderStatus;
-import ua.artcode.taxi.model.User;
+import ua.artcode.taxi.model.*;
 import ua.artcode.taxi.service.SecurityService;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.validator.OrderValidator;
@@ -21,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -218,7 +217,7 @@ public class ApplicationController {
         List<Order> orders = userService.getListOrdersByOrderStatus(OrderStatus.NEW);
         try {
             Map<Long, Double> mapDistances =
-                    userService.createMapOrdersWithDistancesToDriver(orders, driver.getCurrentAddress());
+                    userService.createMapOrdersIdDistancesKmToUser(orders, driver.getCurrentAddress());
             model.addAttribute("listOrders", orders);
             model.addAttribute("mapDistances", mapDistances);
 
@@ -295,5 +294,102 @@ public class ApplicationController {
         model.addAttribute("order", closedOrder);
 
         return "order_info";
+    }
+
+    @RequestMapping(value = "/map/user", method = RequestMethod.GET)
+    public String getCurrentLocation(Model model, Principal principal, HttpServletRequest req) {
+
+        User currentUser = userService.getByUserphone(principal.getName());
+        model.addAttribute("currentUser", currentUser);
+
+        return "map_user";
+    }
+
+    /*@RequestMapping(value = "/map/users", method = RequestMethod.GET)
+    public String showMapDrivers(Model model, Principal principal, HttpServletRequest req) {
+
+        User currentUser = userService.getByUserphone(principal.getName());
+        model.addAttribute("currentUser", currentUser);
+
+        try {
+            if (currentUser.getHomeAddress() != null) { //for passenger - all free drivers
+                List<User> drivers = userService.getListUsersFromDistancesToUser(
+                        Constants.MAX_DISTANCE_FROM_USERS_FOR_MAP_PAGE_KM,
+                        currentUser);
+                model.addAttribute("listUsers", drivers);
+
+            } else if (currentUser.getCar() != null) { //for driver - all new orders
+                List<Order> orders = userService.getListOrdersByOrderStatus(OrderStatus.NEW);
+                model.addAttribute("listOrders", orders);
+            }
+
+        } catch (InputDataWrongException e) {
+            e.printStackTrace();
+            model.addAttribute("error", "Google API error. Check your internet connection.");
+            return "welcome";
+        }
+
+        return "map_users";
+    }*/
+
+    @RequestMapping(value = "/map/history", method = RequestMethod.GET)
+    public String showMapHistory(Model model, Principal principal, HttpServletRequest req) {
+
+        User currentUser = userService.getByUserphone(principal.getName());
+        model.addAttribute("currentUser", currentUser);
+
+        List<Order> orders = userService.getListOrdersOfUser(principal.getName());
+        model.addAttribute("listOrders", orders);
+
+        List<String> listShortOrderInfo = new ArrayList<>();
+        for (Order order : orders) {
+            listShortOrderInfo.add(order.toShortViewJS());
+        }
+        model.addAttribute("ordersJSON", new Gson().toJson(listShortOrderInfo));
+
+        return "map_history";
+    }
+
+    @RequestMapping(value = "/map/neworders", method = RequestMethod.GET)
+    public String showMapNewOrders(Model model, Principal principal, HttpServletRequest req) {
+
+        User currentUser = userService.getByUserphone(principal.getName());
+        model.addAttribute("currentUser", currentUser);
+
+        List<Order> orders = userService.getListOrdersByOrderStatus(OrderStatus.NEW);
+        model.addAttribute("listOrders", orders);
+
+        List<String> listShortOrderInfo = new ArrayList<>();
+        for (Order order : orders) {
+            listShortOrderInfo.add(order.toShortViewJS());
+        }
+        model.addAttribute("ordersJSON", new Gson().toJson(listShortOrderInfo));
+
+        return "map_neworders";
+    }
+
+    @RequestMapping(value = "/map/order", method = RequestMethod.GET)
+    public String showMapOrder(Model model, Principal principal, HttpServletRequest req) {
+
+        User currentUser = userService.getByUserphone(principal.getName());
+        model.addAttribute("currentUser", currentUser);
+
+        Order currentOrder = userService.getOrderById(Long.parseLong(req.getParameter("id")));
+        model.addAttribute("passenger", userService.getById(currentOrder.getIdPassenger()));
+
+        model.addAttribute("order", currentOrder);
+        List<String> listShortOrderInfo = new ArrayList<>();
+        listShortOrderInfo.add(currentOrder.toShortViewJS());
+        model.addAttribute("orderJSON", new Gson().toJson(listShortOrderInfo));
+
+        User driver = userService.getById(currentOrder.getIdDriver());
+        if (driver != null) {
+            model.addAttribute("driver", driver);
+            List<String> listShortDriverInfo = new ArrayList<>();
+            listShortDriverInfo.add(driver.toShortViewJS());
+            model.addAttribute("driverJSON", new Gson().toJson(listShortDriverInfo));
+        }
+
+        return "map_order";
     }
 }

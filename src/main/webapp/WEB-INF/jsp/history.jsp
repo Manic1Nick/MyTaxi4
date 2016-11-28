@@ -43,22 +43,6 @@
         });
     </script>
 
-    <%--<c:set var="textOrder" value="
-
-    Order ID: ${order.id}
-    Time create: ${order.timeCreate}
-    Time taken: ${order.timeTaken}
-    Time cancelled: ${order.timeCancelled}
-    Time closed: ${order.timeClosed}
-    Order status: ${order.orderStatus}
-    Address FROM: ${order.from.country}, ${order.from.city}, ${order.from.street}, ${order.from.houseNum}
-    Address TO: ${order.to.country}, ${order.to.city}, ${order.to.street}, ${order.to.houseNum}
-    Driver ID: ${order.idDriver}
-    Distance, km: ${order.distance}
-    Price, uah: ${order.price}
-
-    "/>--%>
-
     <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
@@ -66,7 +50,8 @@
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
     <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a> |
-        <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
+        <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a> |
+        <a href="${contextPath}/map/history">Show history on map</a></h4>
 
     <h2>USER HISTORY</h2>
 

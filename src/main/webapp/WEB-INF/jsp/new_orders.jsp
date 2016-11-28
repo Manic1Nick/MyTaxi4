@@ -51,7 +51,8 @@
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
     <h4><a onclick="document.forms['logoutForm'].submit()">Logout</a> |
-        <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
+        <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a> |
+        <a href="${contextPath}/map/neworders">Show map</a></h4>
 
     <h2>CURRENT NEW ORDERS</h2>
 

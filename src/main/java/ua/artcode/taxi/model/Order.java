@@ -164,13 +164,14 @@ public class Order {
         this.distanceToDriver = distanceToDriver;
     }
 
-    public String toStringForView() {
-        return "id " + id +
-                ", status " + orderStatus +
-                ", from " + from.getCity() + " " + from.getStreet() + " " + from.getHouseNum() +
-                ", to " + to.getCity() + " " + to.getStreet() + " " + to.getHouseNum() +
-                ", distance " + distance +
-                "km, price " + price + "uah";
+    public String toShortViewJS() {
+        return "id: " + id +
+                ",<br /> create: " + timeCreate +
+                ",<br /> status: " + orderStatus +
+                ",<br /> from: " + from.separateByCommas() +
+                ",<br /> to: " + to.separateByCommas() +
+                ",<br /> distance: " + distance + " km" +
+                ",<br /> price: " + price + " uah";
     }
 
     public String toStringForViewShort() {

@@ -68,6 +68,14 @@ public class Car {
         this.user = user;
     }*/
 
+    public String separateByCommas() {
+
+        return String.format("%s,%s,%s",
+                this.getModel(),
+                this.getType(),
+                this.getNumber());
+    }
+
     @Override
     public boolean equals(Object obj) {
 

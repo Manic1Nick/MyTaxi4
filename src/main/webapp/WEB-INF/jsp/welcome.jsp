@@ -64,13 +64,12 @@
             </c:if>
 
         <%--SHOW MAP--%>
-            <a class="text-left" data-toggle="tooltip" title="Please make me!"
-                style="color:grey">Show map</a> |
+            <a href="${contextPath}/map/user">Show location</a> |
 
         <%--MAKE ORDER / FIND PESSENGER--%>
             <c:if test="${user.active == false}">
                 <c:if test="${user.homeAddress != null}">
-                    <a href="${contextPath}/order/make">Make order</a>
+                    <a href="${contextPath}/order/make">Make new order</a>
                 </c:if>
                 <c:if test="${user.car != null}">
                     <a href="${contextPath}/order/get/all-new">Find passenger</a>
@@ -80,7 +79,7 @@
             <c:if test="${user.active == true}">
                 <c:if test="${user.homeAddress != null}">
                     <a class="text-left" data-toggle="tooltip" title="You have active orders now!"
-                       style="color:grey">Make order</a>
+                       style="color:grey">Make new order</a>
                 </c:if>
                 <c:if test="${user.car != null}">
                     <a class="text-left" data-toggle="tooltip" title="You have active orders now!"

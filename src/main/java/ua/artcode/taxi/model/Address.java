@@ -2,6 +2,7 @@ package ua.artcode.taxi.model;
 
 import ua.artcode.taxi.exception.InputDataWrongException;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
+import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 import ua.artcode.taxi.utils.geolocation.Location;
 
 import javax.persistence.*;
@@ -21,12 +22,9 @@ public class Address {
     //Set<Order> orders;
     //private User user;
 
-    // google api
-    @Transient
+    private GoogleMapsAPI googleMapsAPI;
     private Location location;
-    @Transient
     private double lat;
-    @Transient
     private double lon;
 
     public Address(String country, String city, String street, String houseNum) {
@@ -34,14 +32,17 @@ public class Address {
         this.street = street;
         this.houseNum = houseNum;
         this.country = country;
+        googleMapsAPI = new GoogleMapsAPIImpl();
     }
 
     public Address(double lat, double lon) {
         this.lat = lat;
         this.lon = lon;
+        googleMapsAPI = new GoogleMapsAPIImpl();
     }
 
     public Address() {
+        googleMapsAPI = new GoogleMapsAPIImpl();
     }
 
     public Address(String line){
@@ -59,6 +60,7 @@ public class Address {
             this.street = "";
             this.houseNum = "";
         }
+        googleMapsAPI = new GoogleMapsAPIImpl();
     }
 
     @Id
@@ -104,16 +106,36 @@ public class Address {
         this.houseNum = houseNum;
     }
 
-    public double getLat() {
-        return lat;
+    @Transient
+    public Location getLocation() throws InputDataWrongException {
+
+        return googleMapsAPI.findLocation(
+                this.getCountry(),
+                this.getCity(),
+                this.getStreet(),
+                this.getHouseNum());
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public double getLat() throws InputDataWrongException {
+
+        Location current = this.getLocation();
+
+        return current.getLat();
     }
 
     public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public double getLon() {
-        return lon;
+    public double getLon() throws InputDataWrongException {
+
+        Location current = this.getLocation();
+
+        return current.getLon();
     }
 
     public void setLon(double lon) {

@@ -14,4 +14,5 @@ public final class Constants {
 
     //todo find location
     public static final String USER_LOCATION_PATH = "UA,Kiev,Starokievskaya,10";
+    public static final int MAX_DISTANCE_FROM_USERS_FOR_MAP_PAGE_KM = 30;
 }

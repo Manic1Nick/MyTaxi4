@@ -68,7 +68,17 @@
             </c:if> |
 
         <%--SHOW MAP--%>
-            <a data-toggle="tooltip" title="Please make me!" style="color:grey">Show map</a>
+            <c:if test="${currentUser.homeAddress != null}">
+                <c:if test="${currentUser.active == true}">
+                    <a href="${contextPath}/map/order?id=${order.id}">Show map</a>
+                </c:if>
+            </c:if>
+            <c:if test="${currentUser.car != null}">
+                <c:if test="${currentUser.active == true}">
+                    <a href="${contextPath}/map/order?id=${order.id}">Show map</a>
+                </c:if>
+            </c:if>
+
         </h4>
 
         <div class="container">
