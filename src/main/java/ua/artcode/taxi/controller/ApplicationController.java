@@ -176,13 +176,27 @@ public class ApplicationController {
     @RequestMapping(value = "/order/get", method = RequestMethod.GET)
     public String getOrderInfo(Model model, Principal principal, HttpServletRequest req) {
 
-        User user = userService.getByUserphone(principal.getName());
+        User currentUser = userService.getByUserphone(principal.getName());
         Order order = userService.getOrderById(Long.parseLong(req.getParameter("id")));
 
-        model.addAttribute("currentUser", user);
+        model.addAttribute("currentUser", currentUser);
         model.addAttribute("passenger", userService.getById(order.getIdPassenger()));
-        model.addAttribute("driver", userService.getById(order.getIdDriver()));
         model.addAttribute("order", order);
+
+        List<String> listShortOrderInfo = new ArrayList<>();
+        listShortOrderInfo.add(order.toShortViewJS());
+        model.addAttribute("orderJSON", new Gson().toJson(listShortOrderInfo));
+
+        User driver = userService.getById(order.getIdDriver());
+        if (driver != null &&
+                currentUser.getHomeAddress() != null && //visible driver only for passenger
+                order.getOrderStatus() == OrderStatus.IN_PROGRESS) { //visible driver only for active order
+
+            model.addAttribute("driver", driver);
+            List<String> listShortDriverInfo = new ArrayList<>();
+            listShortDriverInfo.add(driver.toShortViewJS());
+            model.addAttribute("driverJSON", new Gson().toJson(listShortDriverInfo));
+        }
 
         return "order_info";
     }
@@ -305,33 +319,6 @@ public class ApplicationController {
         return "map_user";
     }
 
-    /*@RequestMapping(value = "/map/users", method = RequestMethod.GET)
-    public String showMapDrivers(Model model, Principal principal, HttpServletRequest req) {
-
-        User currentUser = userService.getByUserphone(principal.getName());
-        model.addAttribute("currentUser", currentUser);
-
-        try {
-            if (currentUser.getHomeAddress() != null) { //for passenger - all free drivers
-                List<User> drivers = userService.getListUsersFromDistancesToUser(
-                        Constants.MAX_DISTANCE_FROM_USERS_FOR_MAP_PAGE_KM,
-                        currentUser);
-                model.addAttribute("listUsers", drivers);
-
-            } else if (currentUser.getCar() != null) { //for driver - all new orders
-                List<Order> orders = userService.getListOrdersByOrderStatus(OrderStatus.NEW);
-                model.addAttribute("listOrders", orders);
-            }
-
-        } catch (InputDataWrongException e) {
-            e.printStackTrace();
-            model.addAttribute("error", "Google API error. Check your internet connection.");
-            return "welcome";
-        }
-
-        return "map_users";
-    }*/
-
     @RequestMapping(value = "/map/history", method = RequestMethod.GET)
     public String showMapHistory(Model model, Principal principal, HttpServletRequest req) {
 
@@ -366,30 +353,5 @@ public class ApplicationController {
         model.addAttribute("ordersJSON", new Gson().toJson(listShortOrderInfo));
 
         return "map_neworders";
-    }
-
-    @RequestMapping(value = "/map/order", method = RequestMethod.GET)
-    public String showMapOrder(Model model, Principal principal, HttpServletRequest req) {
-
-        User currentUser = userService.getByUserphone(principal.getName());
-        model.addAttribute("currentUser", currentUser);
-
-        Order currentOrder = userService.getOrderById(Long.parseLong(req.getParameter("id")));
-        model.addAttribute("passenger", userService.getById(currentOrder.getIdPassenger()));
-
-        model.addAttribute("order", currentOrder);
-        List<String> listShortOrderInfo = new ArrayList<>();
-        listShortOrderInfo.add(currentOrder.toShortViewJS());
-        model.addAttribute("orderJSON", new Gson().toJson(listShortOrderInfo));
-
-        User driver = userService.getById(currentOrder.getIdDriver());
-        if (driver != null) {
-            model.addAttribute("driver", driver);
-            List<String> listShortDriverInfo = new ArrayList<>();
-            listShortDriverInfo.add(driver.toShortViewJS());
-            model.addAttribute("driverJSON", new Gson().toJson(listShortDriverInfo));
-        }
-
-        return "map_order";
     }
 }

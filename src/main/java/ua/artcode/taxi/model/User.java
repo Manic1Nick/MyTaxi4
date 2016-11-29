@@ -156,7 +156,7 @@ public class User {
 
     public String toShortViewJS() {
 
-        String nameAndPhone = "name: " + username + ", phone: " + userphone;
+        String nameAndPhone = " name: " + username + ",<br /> phone: " + userphone;
 
         return car != null ? nameAndPhone + ",<br /> car: " + car.separateByCommas() : nameAndPhone;
     }

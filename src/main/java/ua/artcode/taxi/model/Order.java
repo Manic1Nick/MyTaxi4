@@ -165,7 +165,7 @@ public class Order {
     }
 
     public String toShortViewJS() {
-        return "id: " + id +
+        return " id: " + id +
                 ",<br /> create: " + timeCreate +
                 ",<br /> status: " + orderStatus +
                 ",<br /> from: " + from.separateByCommas() +
