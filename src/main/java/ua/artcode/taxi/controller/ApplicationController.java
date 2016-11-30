@@ -235,11 +235,11 @@ public class ApplicationController {
             model.addAttribute("listOrders", orders);
             model.addAttribute("mapDistances", mapDistances);
 
-        } catch (InputDataWrongException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("error", "Google API error. Check your internet connection.");
             return "welcome";
-        }
+        } 
 
         return "new_orders";
     }

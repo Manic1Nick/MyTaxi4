@@ -6,6 +6,7 @@ import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 import ua.artcode.taxi.utils.geolocation.Location;
 
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.Set;
 
 @Entity
@@ -19,13 +20,8 @@ public class Address {
     private String street;
     private String houseNum;
 
-    //Set<Order> orders;
-    //private User user;
-
     private GoogleMapsAPI googleMapsAPI;
     private Location location;
-    private double lat;
-    private double lon;
 
     public Address(String country, String city, String street, String houseNum) {
         this.city = city;
@@ -35,9 +31,8 @@ public class Address {
         googleMapsAPI = new GoogleMapsAPIImpl();
     }
 
-    public Address(double lat, double lon) {
-        this.lat = lat;
-        this.lon = lon;
+    public Address(Location location) {
+        this.location = location;
         googleMapsAPI = new GoogleMapsAPIImpl();
     }
 
@@ -109,6 +104,9 @@ public class Address {
     @Transient
     public Location getLocation() throws InputDataWrongException {
 
+        if (location != null)
+            return location;
+
         return googleMapsAPI.findLocation(
                 this.getCountry(),
                 this.getCity(),
@@ -118,28 +116,6 @@ public class Address {
 
     public void setLocation(Location location) {
         this.location = location;
-    }
-
-    public double getLat() throws InputDataWrongException {
-
-        Location current = this.getLocation();
-
-        return current.getLat();
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLon() throws InputDataWrongException {
-
-        Location current = this.getLocation();
-
-        return current.getLon();
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
     }
 
     /*@OneToMany(cascade=CascadeType.ALL)
@@ -169,8 +145,8 @@ public class Address {
                 ", city='" + city + '\'' +
                 ", street='" + street + '\'' +
                 ", houseNum='" + houseNum + '\'' +
-                ", lat=" + lat +
-                ", lon=" + lon +
+                ", lat=" + location.getLat() +
+                ", lon=" + location.getLon() +
                 '}';
     }
 
@@ -191,6 +167,12 @@ public class Address {
                 this.getCity(),
                 this.getStreet(),
                 this.getHouseNum());
+    }
+
+    @Transient
+    public Address getCurrent() throws IOException {
+
+        return googleMapsAPI.getCurrentLocation();
     }
 
     /*private Location getLocationFromAddress(Address address) throws InputDataWrongException {

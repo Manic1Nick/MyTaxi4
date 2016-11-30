@@ -63,11 +63,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-
-    @Override
     public User getByUserphone(String userphone) {
         return userRepository.findByUserphone(userphone);
     }
@@ -77,7 +72,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id);
     }
 
-    @Override
+    /*@Override
     public User updateUser(Long id, User newUser) {
         User oldUser = userRepository.findById(id);
 
@@ -88,13 +83,13 @@ public class UserServiceImpl implements UserService {
         oldUser.setUsername(newUser.getUsername());
         oldUser.setHomeAddress(newUser.getHomeAddress());
         oldUser.setCar(newUser.getCar());
-        oldUser.setCurrentAddress(newUser.getCurrentAddress());
+        //oldUser.setCurrentAddress(newUser.getCurrentAddress());
         oldUser.setRoles(newUser.getRoles());
         oldUser.setLastOrderId(newUser.getLastOrderId());
         oldUser.setQuantityOrders(newUser.getQuantityOrders());
 
         return userRepository.save(oldUser);
-    }
+    }*/
 
     @Override
     public Order getLastOrder(String userphone) {
@@ -111,7 +106,7 @@ public class UserServiceImpl implements UserService {
         return orderRepository.findById(id);
     }
 
-    @Override
+    /*@Override
     public Order updateOrder(Long id, Order newOrder) {
         Order oldOrder = orderRepository.findById(id);
 
@@ -131,7 +126,7 @@ public class UserServiceImpl implements UserService {
         oldOrder.setDistanceToDriver(newOrder.getDistanceToDriver());
 
         return orderRepository.save(oldOrder);
-    }
+    }*/
 
     @Override
     public Order calculateOrder(Order baseOrder) throws InputDataWrongException {
@@ -182,9 +177,10 @@ public class UserServiceImpl implements UserService {
         return mapOfDistances;
     }
 
-    @Override
+    /*@Override
     public List<User> getListUsersFromDistancesToUser(
-                        int maxDistanceToUserInKm, User currentUser) throws InputDataWrongException {
+                        int maxDistanceToUserInKm, User currentUser)
+            throws InputDataWrongException, IOException {
 
         Location locationCurrentUser = getLocationFromAddress(currentUser.getCurrentAddress());
 
@@ -211,9 +207,9 @@ public class UserServiceImpl implements UserService {
         }
 
         return selectedUsers;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public List<User> getListUserFromUserIds(Collection<Long> userIds) {
 
         List<User> users = new ArrayList<>();
@@ -221,7 +217,7 @@ public class UserServiceImpl implements UserService {
             users.add(getById(userId));
         }
         return users;
-    }
+    }*/
 
     @Override
     public Map<Long, User> getMapUsersFromUserOrders(List<Order> orders, boolean passenger) {
@@ -349,12 +345,6 @@ public class UserServiceImpl implements UserService {
 
         return deleteUser;
     }*/
-
-    @Override
-    public Address getUserLocation() {
-
-        return new Address(Constants.USER_LOCATION_PATH);
-    }
 
     @Transactional
     private void makeUsersOfOrderDeactive(Order order) {

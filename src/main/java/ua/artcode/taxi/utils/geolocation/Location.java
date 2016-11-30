@@ -7,6 +7,11 @@ public class Location {
     private double lon;
     private String placeId;
 
+    public Location(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+
     public Location(String formattedAddress, double lat, double lon) {
         this.formattedAddress = formattedAddress;
         this.lat = lat;

@@ -1,6 +1,9 @@
 package ua.artcode.taxi.model;
 
+import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
+
 import javax.persistence.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +20,7 @@ public class User {
     private String username;
     private Address homeAddress;
     private Car car;
-    private Address currentAddress = new Address(Constants.USER_LOCATION_PATH);
+    private Address currentAddress = new Address();
     private Set<Role> roles = new HashSet<>();
 
     private Long lastOrderId;
@@ -97,12 +100,10 @@ public class User {
         this.car = car;
     }
 
-    //todo get current user location
-    @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
-    public Address getCurrentAddress() {
+    @Transient
+    public Address getCurrentAddress() throws IOException {
 
-        return currentAddress;
+        return currentAddress.getCurrent();
     }
 
     public void setCurrentAddress(Address currentAddress) {

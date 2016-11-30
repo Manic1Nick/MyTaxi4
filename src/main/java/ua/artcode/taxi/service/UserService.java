@@ -8,7 +8,6 @@ import ua.artcode.taxi.model.Order;
 import ua.artcode.taxi.model.OrderStatus;
 import ua.artcode.taxi.model.User;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -16,17 +15,15 @@ public interface UserService {
 
 
     void saveNewUser(User user);
-    void saveNewOrder(Order order, User user)
-            throws InputDataWrongException;
+    void saveNewOrder(Order order, User user) throws InputDataWrongException;
 
-    User getByUsername(String username);
     User getByUserphone(String userphone);
     User getById(Long id);
-    User updateUser(Long id, User newUser);
+    //User updateUser(Long id, User newUser);
 
     Order getLastOrder(String userphone);
     Order getOrderById(Long id);
-    Order updateOrder(Long id, Order newOrder);
+    //Order updateOrder(Long id, Order newOrder);
     Order calculateOrder(Order baseOrder) throws InputDataWrongException;
 
     List<Order> getListOrdersOfUser(String userphone);
@@ -35,11 +32,9 @@ public interface UserService {
     Map<Long, Double> createMapOrdersIdDistancesKmToUser(
             List<Order> orders, Address addressDriver)
             throws InputDataWrongException;
-    List<User> getListUsersFromDistancesToUser(int maxDistanceToUserInKm, User currentUser) throws InputDataWrongException;
-    List<User> getListUserFromUserIds(Collection<Long> userIds);
+    //List<User> getListUsersFromDistancesToUser(int maxDistanceToUserInKm, User currentUser) throws InputDataWrongException, IOException;
+    //List<User> getListUserFromUserIds(Collection<Long> userIds);
     Map<Long, User> getMapUsersFromUserOrders(List<Order> orders, boolean passenger);
-
-    Address getUserLocation();
 
     Order takeOrderByDriver(Long orderId, User driver)
             throws OrderNotFoundException, WrongStatusOrderException;

@@ -1,14 +1,18 @@
 package ua.artcode.taxi.utils.geolocation;
 
 import com.google.gson.*;
+import com.maxmind.geoip.LookupService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import ua.artcode.taxi.exception.InputDataWrongException;
+import ua.artcode.taxi.model.Address;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -27,6 +31,14 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
 
     public static final String GOOGLE_API_KEY =
             "AIzaSyD-KmQUcMJUpRzjthK1CvNtmYw3mLf9vzs";
+
+    public static final String DATA_IP_FILE =
+            "/home/jessy/IdeaProjects/_DataForProjects/GeoLiteCity.dat";
+
+    public static final String URL_FOR_SEARCH_CURRENT_IP =
+            "http://checkip.amazonaws.com";
+
+
 
     @Override
     public Location findLocation(String unformatted) throws InputDataWrongException {
@@ -140,5 +152,24 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
         }
 
         return 0;
+    }
+
+    public Address getCurrentLocation() throws IOException {
+
+        URL whatismyip = new URL(URL_FOR_SEARCH_CURRENT_IP);
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                whatismyip.openStream()));
+
+        String ip = in.readLine();
+
+        LookupService cl = new LookupService(DATA_IP_FILE,
+                LookupService.GEOIP_MEMORY_CACHE | LookupService.GEOIP_CHECK_CACHE);
+
+        com.maxmind.geoip.Location geoLocation = cl.getLocation(ip);
+
+        Float lat = geoLocation.latitude;
+        Float lng = geoLocation.longitude;
+
+        return new Address(new Location(lat, lng));
     }
 }
