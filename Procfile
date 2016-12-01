@@ -1,1 +1,1 @@
-web: java -cp target/classes:target/dependency/* target/classes/ua/artcode/taxi/controller/ApplicationController
+web: java -cp target/classes:target/dependency/* ua.artcode.taxi.controller.ApplicationController
