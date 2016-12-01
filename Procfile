@@ -1,1 +1,1 @@
-web: sh target/bin/webapp
+web: sh target/TaxiApp-1.0
