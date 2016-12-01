@@ -1,1 +1,1 @@
-web: java -cp target/classes:target/dependency/* TaxiApp-1.0.war
+web: java -cp target/classes:target/dependency/* target/classes/ua/artcode/taxi
