@@ -1,1 +1,1 @@
-web: sh target/TaxiApp-1.0
+web: java $JAVA_OPTS -Dserver.port=$PORT -jar target/*.jar
