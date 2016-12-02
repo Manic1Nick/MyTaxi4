@@ -1,1 +1,1 @@
-web: java -war target/*.war
+web: target/start -Dhttp.port=${PORT} ${JAVA_OPTS} -DapplyEvolutions.default=true -Ddb.default.driver=org.MySQL.Driver -Ddb.default.url=${DATABASE_URL}
