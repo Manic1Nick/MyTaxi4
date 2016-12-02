@@ -1,1 +1,1 @@
-web:  java $JAVA_OPTS -jar target/dependency/webapp-runner.jar --port $PORT target/*.war -Ddb.default.driver=com.mysql.jdbc.Driver -Ddb.default.url=${DATABASE_URL}
+web: java $JAVA_OPTS -cp target/classes:target/dependency/* --port $PORT target/*.war

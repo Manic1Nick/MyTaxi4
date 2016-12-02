@@ -1,7 +1,5 @@
 package ua.artcode.taxi.model;
 
-import com.sun.org.apache.xml.internal.serialize.Serializer;
-
 import javax.persistence.*;
 import java.util.Date;
 
