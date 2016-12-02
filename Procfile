@@ -1,1 +1,1 @@
-web: target/TaxiApp-1.0 -Dhttp.port=${PORT} ${JAVA_OPTS} -DapplyEvolutions.default=true -Ddb.default.driver=org.MySQL.Driver -Ddb.default.url=${DATABASE_URL}
+web: target/TaxiApp-1.0.war -Dhttp.port=${PORT} ${JAVA_OPTS} -DapplyEvolutions.default=true -Ddb.default.driver=org.MySQL.Driver -Ddb.default.url=${DATABASE_URL}
