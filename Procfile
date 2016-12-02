@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp target/classes:target/dependency/* ua.artcode.taxi
+web: java $JAVA_OPTS --port $PORT target/*.war
