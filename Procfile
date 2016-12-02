@@ -1,1 +1,1 @@
-web: target/start -Dhttp.port=${PORT} ${JAVA_OPTS} -DapplyEvolutions.default=true -Ddb.default.driver=org.MySQL.Driver -Ddb.default.url=${DATABASE_URL}
+web: target/classes:target/dependency/* -Dhttp.port=${PORT} ${JAVA_OPTS} -DapplyEvolutions.default=true -Ddb.default.driver=org.MySQL.Driver -Ddb.default.url=${DATABASE_URL}
