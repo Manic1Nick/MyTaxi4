@@ -20,7 +20,7 @@ public class Address {
     private String street;
     private String houseNum;
 
-    private GoogleMapsAPI googleMapsAPI;
+    private GoogleMapsAPI googleMapsAPI = new GoogleMapsAPIImpl();
     private Location location;
 
     public Address(String country, String city, String street, String houseNum) {
@@ -28,16 +28,13 @@ public class Address {
         this.street = street;
         this.houseNum = houseNum;
         this.country = country;
-        googleMapsAPI = new GoogleMapsAPIImpl();
     }
 
     public Address(Location location) {
         this.location = location;
-        googleMapsAPI = new GoogleMapsAPIImpl();
     }
 
     public Address() {
-        googleMapsAPI = new GoogleMapsAPIImpl();
     }
 
     public Address(String line){
@@ -55,7 +52,6 @@ public class Address {
             this.street = "";
             this.houseNum = "";
         }
-        googleMapsAPI = new GoogleMapsAPIImpl();
     }
 
     @Id
@@ -104,39 +100,12 @@ public class Address {
     @Transient
     public Location getLocation() throws InputDataWrongException {
 
-        if (location != null)
-            return location;
-
-        return googleMapsAPI.findLocation(
-                this.getCountry(),
-                this.getCity(),
-                this.getStreet(),
-                this.getHouseNum());
+        return googleMapsAPI.findLocation(this.separateByCommas());
     }
 
     public void setLocation(Location location) {
         this.location = location;
     }
-
-    /*@OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
-    public Set<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(Set<Order> orders) {
-        this.orders = orders;
-    }*/
-
-    /*@OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(referencedColumnName = "id")
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }*/
 
     @Override
     public String toString() {
@@ -150,16 +119,6 @@ public class Address {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
-
     public String separateByCommas() {
 
         return String.format("%s,%s,%s,%s",
@@ -168,20 +127,4 @@ public class Address {
                 this.getStreet(),
                 this.getHouseNum());
     }
-
-    @Transient
-    public Address getCurrent() throws IOException {
-
-        return googleMapsAPI.getCurrentLocation();
-    }
-
-    /*private Location getLocationFromAddress(Address address) throws InputDataWrongException {
-
-        return googleMapsAPI.findLocation(
-                address.getCountry(),
-                address.getCity(),
-                address.getStreet(),
-                address.getHouseNum()
-        );
-    }*/
 }

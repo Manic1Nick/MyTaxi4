@@ -1,5 +1,6 @@
 package ua.artcode.taxi.model;
 
+import ua.artcode.taxi.exception.InputDataWrongException;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
 
 import javax.persistence.*;
@@ -20,12 +21,14 @@ public class User {
     private String username;
     private Address homeAddress;
     private Car car;
-    private Address currentAddress = new Address();
+
     private Set<Role> roles = new HashSet<>();
 
     private Long lastOrderId;
     private int quantityOrders;
     private boolean active;
+
+    private Address currentAddress;
 
     public User() {
     }
@@ -101,17 +104,6 @@ public class User {
     }
 
     @Transient
-    public Address getCurrentAddress() throws IOException {
-
-        return currentAddress.getCurrent();
-    }
-
-    public void setCurrentAddress(Address currentAddress) {
-
-        this.currentAddress = currentAddress;
-    }
-
-    @Transient
     public String getPasswordConfirm() {
         return passwordConfirm;
     }
@@ -155,6 +147,17 @@ public class User {
         this.active = active;
     }
 
+    @Transient
+    public Address getCurrentAddress() {
+
+        return currentAddress;
+    }
+
+    public void setCurrentAddress(Address currentAddress) {
+
+        this.currentAddress = currentAddress;
+    }
+
     public String toShortViewJS() {
 
         String nameAndPhone = " name: " + username + ",<br /> phone: " + userphone;
@@ -164,16 +167,15 @@ public class User {
 
     @Override
     public String toString() {
-        return super.toString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return "User{" +
+                "id=" + id +
+                ", userphone='" + userphone + '\'' +
+                ", username='" + username + '\'' +
+                ", homeAddress=" + homeAddress +
+                ", car=" + car +
+                ", lastOrderId=" + lastOrderId +
+                ", quantityOrders=" + quantityOrders +
+                ", active=" + active +
+                '}';
     }
 }

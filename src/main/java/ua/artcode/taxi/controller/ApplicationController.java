@@ -115,6 +115,12 @@ public class ApplicationController {
                             HttpServletRequest req) throws InputDataWrongException {
 
         User passenger = userService.getByUserphone(principal.getName());
+        try {
+            //update dinamic current address of user
+            passenger = userService.updateCurrentAddressOfUser(passenger);
+        } catch (IOException | InputDataWrongException e) {
+            e.printStackTrace();
+        }
         model.addAttribute("currentUser", passenger);
 
         Order lastOrder = userService.getLastOrder(principal.getName());
@@ -192,6 +198,13 @@ public class ApplicationController {
                 currentUser.getHomeAddress() != null && //visible driver only for passenger
                 order.getOrderStatus() == OrderStatus.IN_PROGRESS) { //visible driver only for active order
 
+            try {
+                // /update dynamic current address of driver
+                driver = userService.updateCurrentAddressOfUser(driver);
+            } catch (IOException | InputDataWrongException e) {
+                e.printStackTrace();
+            }
+
             model.addAttribute("driver", driver);
             List<String> listShortDriverInfo = new ArrayList<>();
             listShortDriverInfo.add(driver.toShortViewJS());
@@ -210,8 +223,8 @@ public class ApplicationController {
         User user = userService.getByUserphone(principal.getName());
         model.addAttribute("currentUser", user);
 
-        boolean passenger = user.getHomeAddress() != null;
-        Map<Long, User> usersInOrders = userService.getMapUsersFromUserOrders(orders, passenger);
+        Map<Long, User> usersInOrders =
+                userService.getMapUsersFromUserOrders(orders, user.getHomeAddress() != null);
         model.addAttribute("mapUsers", usersInOrders);
 
         return "history";
@@ -231,13 +244,14 @@ public class ApplicationController {
         List<Order> orders = userService.getListOrdersByOrderStatus(OrderStatus.NEW);
         try {
             Map<Long, Double> mapDistances =
-                    userService.createMapOrdersIdDistancesKmToUser(orders, driver.getCurrentAddress());
+                    userService.createMapOrdersIdDistancesKmToUser(orders);
             model.addAttribute("listOrders", orders);
             model.addAttribute("mapDistances", mapDistances);
 
         } catch (Exception e) {
             e.printStackTrace();
-            model.addAttribute("error", "Google API error. Check your internet connection.");
+            //model.addAttribute("error", "Google API error. Check your internet connection.");
+            model.addAttribute("error", e.getMessage());
             return "welcome";
         } 
 
@@ -308,15 +322,6 @@ public class ApplicationController {
         model.addAttribute("order", closedOrder);
 
         return "order_info";
-    }
-
-    @RequestMapping(value = "/map/user", method = RequestMethod.GET)
-    public String getCurrentLocation(Model model, Principal principal, HttpServletRequest req) {
-
-        User currentUser = userService.getByUserphone(principal.getName());
-        model.addAttribute("currentUser", currentUser);
-
-        return "map_user";
     }
 
     @RequestMapping(value = "/map/history", method = RequestMethod.GET)

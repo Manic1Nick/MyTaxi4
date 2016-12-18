@@ -4,6 +4,7 @@
 <c:set var="contextPath" value="${pageContext.request.contextPath}"/>
 <c:set var="user" value="${currentUser}"/>
 <c:set var="message" value="${message}"/>
+<c:set var="errorMessage" value="${error}"/>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,11 +37,18 @@
 
     <c:if test="${pageContext.request.userPrincipal.name != null}">
 
+    <div id="menu" class="container">
         <%--ALERT MESSAGE--%>
         <c:if test="${message != null}">
             <div class="alert alert-success">
                 <h4><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                     <strong>${message}</strong></h4>
+            </div>
+        </c:if>
+        <c:if test="${errorMessage != null}">
+            <div class="alert alert-danger">
+                <h4><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>${errorMessage}</strong></h4>
             </div>
         </c:if>
 
@@ -62,9 +70,6 @@
                 <a class="text-left" data-toggle="tooltip" title="You don't have any orders!"
                     style="color:grey">Show last order</a> |
             </c:if>
-
-        <%--SHOW MAP--%>
-            <a href="${contextPath}/map/user">Show location</a> |
 
         <%--MAKE ORDER / FIND PESSENGER--%>
             <c:if test="${user.active == false}">
@@ -89,9 +94,12 @@
 
 
         </h4>
+    </div>
 
-        <div class="container">
-            <h2>User Info</h2>
+    <div id="userInfo" class="container">
+        <h2>User Info</h2>
+
+        <div id="text" class="col-md-6">
             <table class="table table-hover">
                 <tbody>
                 <tr>
@@ -138,7 +146,8 @@
             </table>
         </div>
 
-
+        <div id="map" class="col-md-6" style="width: 500px; height: 500px"></div>
+    </div>
 
     </c:if>
 
@@ -146,5 +155,40 @@
 <!-- /container -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script src="${contextPath}/resources/js/bootstrap.min.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD-KmQUcMJUpRzjthK1CvNtmYw3mLf9vzs&callback=initMap"
+        type="text/javascript"></script>
+
+<%--user location--%>
+<script type="text/javascript">
+    if (navigator.geolocation) {
+
+        navigator.geolocation.getCurrentPosition(function (p) {
+            var LatLng = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
+            var mapOptions = {
+                center: LatLng,
+                zoom: 13,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+            var infoWindow = new google.maps.InfoWindow();
+            var marker = new google.maps.Marker({
+                position: LatLng,
+                map: map,
+                title: "<div style = 'height:60px;width:200px;color: #c7254e'>" +
+                "<b>Your location:</b><br />" +
+                "Latitude: " + p.coords.latitude + "<br />" +
+                "Longitude: " + p.coords.longitude
+            });
+            google.maps.event.addListener(marker, "click", function (e) {
+                infoWindow.setContent(marker.title);
+                infoWindow.open(map, marker);
+            });
+        });
+
+    } else {
+        alert('Geo Location feature is not supported in this browser.');
+    }
+</script>
+
 </body>
 </html>

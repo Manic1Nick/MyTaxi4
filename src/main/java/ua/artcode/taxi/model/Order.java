@@ -20,7 +20,6 @@ public class Order {
     private int distance;
     private int price;
     private String message;
-    private int distanceToDriver;
 
     public Order() {
     }
@@ -153,15 +152,6 @@ public class Order {
         this.message = message;
     }
 
-    @Transient
-    public int getDistanceToDriver() {
-        return distanceToDriver;
-    }
-
-    public void setDistanceToDriver(int distanceToDriver) {
-        this.distanceToDriver = distanceToDriver;
-    }
-
     public String toShortViewJS() {
         return " id: " + id +
                 ",<br /> create: " + timeCreate +
@@ -170,21 +160,6 @@ public class Order {
                 ",<br /> to: " + to.separateByCommas() +
                 ",<br /> distance: " + distance + " km" +
                 ",<br /> price: " + price + " uah";
-    }
-
-    public String toStringForViewShort() {
-        return "id " + id +
-                ", price " + price + "uah";
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
     }
 }
 

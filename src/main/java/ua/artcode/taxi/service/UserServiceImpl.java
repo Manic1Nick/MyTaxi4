@@ -15,6 +15,7 @@ import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
 import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 import ua.artcode.taxi.utils.geolocation.Location;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service(value = "service")
@@ -123,7 +124,6 @@ public class UserServiceImpl implements UserService {
         oldOrder.setDistance(newOrder.getDistance());
         oldOrder.setPrice(newOrder.getPrice());
         oldOrder.setMessage(newOrder.getMessage());
-        oldOrder.setDistanceToDriver(newOrder.getDistanceToDriver());
 
         return orderRepository.save(oldOrder);
     }*/
@@ -158,17 +158,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<Long, Double> createMapOrdersIdDistancesKmToUser(
-            List<Order> orders, Address addressDriver)
-            throws InputDataWrongException {
+    public Map<Long, Double> createMapOrdersIdDistancesKmToUser(List<Order> orders)
+            throws InputDataWrongException, IOException {
 
-        Location locationDriver = getLocationFromAddress(addressDriver);
+        Location locationDriver = googleMapsAPI.getCurrentLocation();
 
         Map <Long, Double> mapOfDistances = new HashMap<>();
         for (Order order : orders) {
-            Location locationPassenger = getLocationFromAddress(order.getFrom());
+            Location locationPassenger = googleMapsAPI.findLocation(order.getFrom().separateByCommas());
 
-            int distanceInMeters = new Distance(locationDriver, locationPassenger).calculateDistance();
+            int distanceInMeters = (int) googleMapsAPI.getDistance(locationDriver, locationPassenger);
             double distanceInKm = (double) (Math.round(distanceInMeters / 100))/10;
 
             mapOfDistances.put(order.getId(), distanceInKm);
@@ -176,48 +175,6 @@ public class UserServiceImpl implements UserService {
 
         return mapOfDistances;
     }
-
-    /*@Override
-    public List<User> getListUsersFromDistancesToUser(
-                        int maxDistanceToUserInKm, User currentUser)
-            throws InputDataWrongException, IOException {
-
-        Location locationCurrentUser = getLocationFromAddress(currentUser.getCurrentAddress());
-
-        List<User> users = new ArrayList<>();
-
-        if (currentUser.getHomeAddress() != null) { //current user is passenger
-            users = userRepository.findByActiveAndHomeAddress(
-                    false, //false = driver not active (find passenger)
-                    null); //home address = null for drivers
-
-        } else if (currentUser.getCar() != null) { //current user is driver
-            users = userRepository.findByActiveAndCar(
-                    true, //false = passenger active (find driver)
-                    null); //car = null for passengers
-        }
-
-        List<User> selectedUsers = new ArrayList<>();
-        for (User user : users) {
-            Location locationUser = getLocationFromAddress(user.getCurrentAddress());
-
-            int distanceInMeters = new Distance(locationUser, locationCurrentUser).calculateDistance();
-            if (distanceInMeters <= (maxDistanceToUserInKm * 1000))
-                selectedUsers.add(user);
-        }
-
-        return selectedUsers;
-    }*/
-
-    /*@Override
-    public List<User> getListUserFromUserIds(Collection<Long> userIds) {
-
-        List<User> users = new ArrayList<>();
-        for (Long userId : userIds) {
-            users.add(getById(userId));
-        }
-        return users;
-    }*/
 
     @Override
     public Map<Long, User> getMapUsersFromUserOrders(List<Order> orders, boolean passenger) {
@@ -229,6 +186,17 @@ public class UserServiceImpl implements UserService {
         }
 
         return users;
+    }
+
+    @Override
+    public User updateCurrentAddressOfUser(User user) throws IOException, InputDataWrongException {
+
+        Location currentLocation = googleMapsAPI.getCurrentLocation();
+        Address currentAddress = getAddressFromLocation(currentLocation);
+
+        user.setCurrentAddress(currentAddress);
+
+        return user;
     }
 
     @Override
@@ -285,7 +253,7 @@ public class UserServiceImpl implements UserService {
         order.setTimeCancelled(new Date());
         orderRepository.save(order);
 
-        makeUsersOfOrderDeactive(order);
+        deactivateUsersInOrder(order);
 
         return order;
     }
@@ -310,7 +278,7 @@ public class UserServiceImpl implements UserService {
         order.setTimeClosed(new Date());
         orderRepository.save(order);
 
-        makeUsersOfOrderDeactive(order);
+        deactivateUsersInOrder(order);
 
         return order;
     }
@@ -347,7 +315,7 @@ public class UserServiceImpl implements UserService {
     }*/
 
     @Transactional
-    private void makeUsersOfOrderDeactive(Order order) {
+    private void deactivateUsersInOrder(Order order) {
 
         User passenger = getById(order.getIdPassenger());
         passenger.setActive(false);
@@ -358,17 +326,6 @@ public class UserServiceImpl implements UserService {
             driver.setActive(false);
             userRepository.save(driver);
         }
-    }
-
-    @Transactional
-    private Location getLocationFromAddress(Address address) throws InputDataWrongException {
-
-        return googleMapsAPI.findLocation(
-                address.getCountry(),
-                address.getCity(),
-                address.getStreet(),
-                address.getHouseNum()
-        );
     }
 
     @Transactional
@@ -383,10 +340,11 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     private int calculateDistance(Address from, Address to) throws InputDataWrongException {
-        Location location = getLocationFromAddress(from);
-        Location location1 = getLocationFromAddress(to);
 
-        return ((int) googleMapsAPI.getDistance(location, location1) / 1000);
+        Location locationFrom = googleMapsAPI.findLocation(from.separateByCommas());
+        Location locationTo = googleMapsAPI.findLocation(to.separateByCommas());
+
+        return ((int) googleMapsAPI.getDistance(locationFrom, locationTo) / 1000);
     }
 
     @Transactional
@@ -394,70 +352,35 @@ public class UserServiceImpl implements UserService {
         return (int) pricePerKilometer * distance + Constants.FEE_FOR_FILING_TAXI_UAH;
     }
 
+    @Transactional
+    private Address getAddressFromLocation(Location location) {
 
-    private class Distance implements Comparable {
+        Address address = new Address(location);
 
-        private Location fromLocation;
-        private Location toLocation;
-        private GoogleMapsAPI googleMapsAPI;
+        String formattedAddress = location.getFormattedAddress();
+        String[] addressArray = formattedAddress.split(",");
 
-        private int averageSpeedKmH;
-        private int timeInMin;
-
-        private Distance(Location fromLocation, Location toLocation) {
-            this.fromLocation = fromLocation;
-            this.toLocation = toLocation;
-            googleMapsAPI = new GoogleMapsAPIImpl();
-            averageSpeedKmH = Constants.AVERAGE_SPEED_KM_H;
+        if (addressArray.length >= 4) {
+            address.setStreet(addressArray[0].trim());
+            address.setHouseNum(addressArray[1].trim());
+            address.setCity(addressArray[2].trim());
+            address.setCountry(addressArray[3].trim());
         }
 
-        public Location getFromLocation() {
-            return fromLocation;
-        }
-
-        public void setFromLocation(Location fromLocation) {
-            this.fromLocation = fromLocation;
-        }
-
-        public Location getToLocation() {
-            return toLocation;
-        }
-
-        public void setToLocation(Location toLocation) {
-            this.toLocation = toLocation;
-        }
-
-        private int calculateDistance() throws InputDataWrongException {
-            return (int) googleMapsAPI.getDistance(fromLocation, toLocation);
-        }
-
-        private int calculateDistanceInKm() throws InputDataWrongException {
-            int distanceInMeters = (int) googleMapsAPI.getDistance(fromLocation, toLocation);
-            return distanceInMeters/1000;
-        }
-
-        public void setSpeedKmH(int speedKmH) {
-            this.averageSpeedKmH = speedKmH;
-        }
-
-        public int getTimeInMin() throws InputDataWrongException {
-            return (this.calculateDistance() / 1000) / this.averageSpeedKmH;
-        }
-
-        @Override
-        public int compareTo(Object o) {
-
-            Distance tmp = (Distance)o;
-            try {
-                double distance1 = this.googleMapsAPI.getDistance(fromLocation, toLocation);
-                double distance2 = tmp.googleMapsAPI.getDistance(fromLocation, toLocation);
-                return distance1 - distance2 > 0 ? 1 : -1 ;
-
-            } catch (InputDataWrongException e) {
-                e.printStackTrace();
-            }
-            return 0;
-        }
+        return address;
     }
 
+    @Transactional
+    private Address addLocationToAddress(Address address) throws InputDataWrongException {
+
+        Location location = googleMapsAPI.findLocation(
+                address.getCountry(),
+                address.getCity(),
+                address.getStreet(),
+                address.getHouseNum());
+
+        address.setLocation(location);
+
+        return address;
+    }
 }

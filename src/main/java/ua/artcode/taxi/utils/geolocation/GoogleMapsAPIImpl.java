@@ -7,7 +7,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import ua.artcode.taxi.exception.InputDataWrongException;
-import ua.artcode.taxi.model.Address;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +28,9 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
     public static final String GET_DISTANCE_QUERY_TEMPLATE =
             "https://maps.googleapis.com/maps/api/directions/json?origin=place_id:%s&destination=place_id:%s&key=%s";
 
+    public static final String GET_LOCATION_QUERY_TEMPLATE =
+            "https://maps.googleapis.com/maps/api/geocode/json?latlng=%s,%s&key=%s";
+
     public static final String GOOGLE_API_KEY =
             "AIzaSyD-KmQUcMJUpRzjthK1CvNtmYw3mLf9vzs";
 
@@ -45,14 +47,7 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
         final String preparedQuery = String.format(GET_ADDRESS_UNFORMATTED_QUERY_TEMPLATE,
                 prepareQueryReplaceSpaces(unformatted), GOOGLE_API_KEY);
 
-        try {
-            String jsonResponse = sendGetRequest(preparedQuery);
-            return convert(jsonResponse);
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return getLocationFromURL(preparedQuery);
     }
 
     private String prepareQueryReplaceSpaces(String unformatted) {
@@ -63,16 +58,30 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
     public Location findLocation(String country, String city, String street, String houseNum)
                                                                             throws InputDataWrongException {
         final String preparedQuery = String.format(GET_ADDRESS_FORMATTED_QUERY_TEMPLATE,
-                prepareQueryReplaceSpaces((houseNum + " " + street)), city, country, GOOGLE_API_KEY);
+                prepareQueryReplaceSpaces((houseNum + " " + street)),
+                prepareQueryReplaceSpaces(city),
+                country,
+                GOOGLE_API_KEY);
 
+        return getLocationFromURL(preparedQuery);
+    }
+
+    @Override
+    public Location findPlaceID(Location location) throws InputDataWrongException {
+        final String preparedQuery = String.format(GET_LOCATION_QUERY_TEMPLATE,
+                location.getLat(), location.getLon(), GOOGLE_API_KEY);
+
+        return getLocationFromURL(preparedQuery);
+    }
+
+    private Location getLocationFromURL(String preparedQuery) throws InputDataWrongException {
         try {
             String jsonResponse = sendGetRequest(preparedQuery);
             return convert(jsonResponse);
         } catch (IOException | ParseException e) {
             e.printStackTrace();
+            throw new InputDataWrongException("Wrong calculation in Google API");
         }
-
-        return null;
     }
 
     private Location convert(String jsonResponse) throws ParseException {
@@ -109,6 +118,7 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
             res = getStringContent(con.getInputStream());
 
         } catch (UnknownHostException e) {
+            e.printStackTrace();
             throw new InputDataWrongException("Wrong calculation in Google API");
         }
 
@@ -149,16 +159,14 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
             //System.out.println(body);
         } catch (IOException e) {
             e.printStackTrace();
+            throw new InputDataWrongException("Wrong calculation in Google API");
         }
-
-        return 0;
     }
 
-    public Address getCurrentLocation() throws IOException {
+    public Location getCurrentLocation() throws IOException, InputDataWrongException {
 
         URL whatismyip = new URL(URL_FOR_SEARCH_CURRENT_IP);
-        BufferedReader in = new BufferedReader(new InputStreamReader(
-                whatismyip.openStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
 
         String ip = in.readLine();
 
@@ -170,6 +178,6 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
         Float lat = geoLocation.latitude;
         Float lng = geoLocation.longitude;
 
-        return new Address(new Location(lat, lng));
+        return findPlaceID(new Location(lat, lng));
     }
 }
