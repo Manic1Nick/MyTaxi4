@@ -37,6 +37,27 @@
 
 <div class="container">
 
+    <%--LOGOUT--%>
+    <script>
+        function logout() {
+            $("#logout").modal('show');
+        }
+    </script>
+    <div class="modal fade" id="logout" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Are you sure to exit?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                            onclick="document.forms['logoutForm'].submit()">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="menu">
         <form id="logoutForm" method="POST" action="${contextPath}/logout">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -47,7 +68,7 @@
 
         <h4>
             <%--LOGOUT--%>
-            <a onclick="document.forms['logoutForm'].submit()">Logout</a> |
+            <a onclick="logout()">Logout</a> |
 
             <%--RETURN TO MENU--%>
             <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a> |

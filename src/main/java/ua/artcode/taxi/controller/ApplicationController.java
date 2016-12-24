@@ -116,10 +116,12 @@ public class ApplicationController {
 
         User passenger = userService.getByUserphone(principal.getName());
         try {
-            //update dinamic current address of user
+            //update dinamic current address of passenger
             passenger = userService.updateCurrentAddressOfUser(passenger);
         } catch (IOException | InputDataWrongException e) {
             e.printStackTrace();
+            model.addAttribute("error", e.getMessage());
+            return "welcome";
         }
         model.addAttribute("currentUser", passenger);
 
@@ -199,10 +201,12 @@ public class ApplicationController {
                 order.getOrderStatus() == OrderStatus.IN_PROGRESS) { //visible driver only for active order
 
             try {
-                // /update dynamic current address of driver
+                //update dynamic current address of driver
                 driver = userService.updateCurrentAddressOfUser(driver);
             } catch (IOException | InputDataWrongException e) {
                 e.printStackTrace();
+                model.addAttribute("error", e.getMessage());
+                return "welcome";
             }
 
             model.addAttribute("driver", driver);
