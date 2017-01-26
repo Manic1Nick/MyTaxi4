@@ -17,3 +17,14 @@
 2017-01-26 19:57:52 INFO  Dialect:156 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
 2017-01-26 19:57:52 INFO  Version:30 - HV000001: Hibernate Validator 5.3.1.Final
 2017-01-26 19:58:37 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
+2017-01-26 21:00:49 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2017-01-26 21:00:49 INFO  Version:37 - HHH000412: Hibernate Core {5.1.0.Final}
+2017-01-26 21:00:49 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2017-01-26 21:00:49 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2017-01-26 21:00:50 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2017-01-26 21:00:50 WARN  JdbcEnvironmentInitiator:132 - HHH000342: Could not obtain connection to query metadata : Cannot load JDBC driver class 'com.postgresql.jdbc.Driver'
+2017-01-26 21:00:50 INFO  Dialect:156 - HHH000400: Using dialect: org.hibernate.dialect.MySQL5Dialect
+2017-01-26 21:00:50 INFO  LobCreatorBuilderImpl:63 - HHH000422: Disabling contextual LOB creation as connection was null
+2017-01-26 21:00:51 INFO  Version:30 - HV000001: Hibernate Validator 5.3.1.Final
