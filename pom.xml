@@ -16,6 +16,7 @@
         <hibernate.version>5.1.0.Final</hibernate.version>
         <hibernate-validator.version>5.3.1.Final</hibernate-validator.version>
         <mysql-connector.version>5.1.39</mysql-connector.version>
+        <postgresql.version>9.1-901-1.jdbc4</postgresql.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
         <jstl.version>1.2</jstl.version>
         <junit.version>3.8.1</junit.version>
@@ -78,11 +79,11 @@
         </dependency>
 
 
-        <dependency>
+        <!--<dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql-connector.version}</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>commons-dbcp</groupId>
@@ -138,12 +139,17 @@
             <version>1.3.1</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>com.github.jsimone</groupId>
-            <artifactId>webapp-runner</artifactId>
-            <version>8.5.9.0</version>
-            <scope>provided</scope>
-        </dependency>-->
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4.1212.jre7</version>
+        </dependency>
 
     </dependencies>
 
