@@ -1080,3 +1080,15 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "hibernate_sequenc
 2017-01-27 13:13:20 WARN  SqlExceptionHelper:129 - SQL Error: 0, SQLState: 23502
 2017-01-27 13:13:20 ERROR SqlExceptionHelper:131 - ERROR: null value in column "id" violates not-null constraint
   Подробности: Failing row contains (null, f, null, $2a$11$PxmSv1yeq.7nHNlJNnwxs.4Dmd2D1hvBIg1FfD5RtrVfb3mDTMm4i, 0, Nickolay, +380001231212, null, 18).
+2017-01-27 20:49:32 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2017-01-27 20:49:33 INFO  Version:37 - HHH000412: Hibernate Core {5.1.0.Final}
+2017-01-27 20:49:33 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2017-01-27 20:49:33 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2017-01-27 20:49:33 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2017-01-27 20:49:33 INFO  Dialect:156 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
+2017-01-27 20:49:34 INFO  LobCreatorBuilderImpl:124 - HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+2017-01-27 20:49:34 INFO  BasicTypeRegistry:138 - HHH000270: Type registration [java.util.UUID] overrides previous : org.hibernate.type.UUIDBinaryType@cfd37b
+2017-01-27 20:49:34 INFO  Version:30 - HV000001: Hibernate Validator 5.3.1.Final
+2017-01-27 20:50:02 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
