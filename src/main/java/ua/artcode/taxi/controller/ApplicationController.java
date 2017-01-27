@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import ua.artcode.taxi.exception.InputDataWrongException;
-import ua.artcode.taxi.model.*;
+import ua.artcode.taxi.model.Address;
+import ua.artcode.taxi.model.Order;
+import ua.artcode.taxi.model.OrderStatus;
+import ua.artcode.taxi.model.User;
 import ua.artcode.taxi.service.SecurityService;
 import ua.artcode.taxi.service.UserService;
 import ua.artcode.taxi.validator.OrderValidator;
@@ -116,12 +119,14 @@ public class ApplicationController {
 
         User passenger = userService.getByUserphone(principal.getName());
         try {
-            //update dinamic current address of passenger
+            //update dynamic current address of passenger
             passenger = userService.updateCurrentAddressOfUser(passenger);
         } catch (IOException | InputDataWrongException e) {
             e.printStackTrace();
             model.addAttribute("error", e.getMessage());
             return "welcome";
+        } catch (NullPointerException e) {
+            passenger.setCurrentAddress(null);
         }
         model.addAttribute("currentUser", passenger);
 
@@ -207,6 +212,8 @@ public class ApplicationController {
                 e.printStackTrace();
                 model.addAttribute("error", e.getMessage());
                 return "welcome";
+            } catch (NullPointerException e) {
+                driver.setCurrentAddress(null);
             }
 
             model.addAttribute("driver", driver);

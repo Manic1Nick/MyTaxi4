@@ -1,13 +1,7 @@
 package ua.artcode.taxi.model;
 
-import ua.artcode.taxi.exception.InputDataWrongException;
-import ua.artcode.taxi.utils.geolocation.GoogleMapsAPI;
-
 import javax.persistence.*;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -50,7 +44,8 @@ public class User {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="USERS_GEN",sequenceName="USERS_SEQ", initialValue=10000, allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="USERS_GEN")
     public Long getId() {
         return id;
     }

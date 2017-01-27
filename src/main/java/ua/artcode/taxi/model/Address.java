@@ -6,8 +6,6 @@ import ua.artcode.taxi.utils.geolocation.GoogleMapsAPIImpl;
 import ua.artcode.taxi.utils.geolocation.Location;
 
 import javax.persistence.*;
-import java.io.IOException;
-import java.util.Set;
 
 @Entity
 @Table(name = "addresses")
@@ -55,7 +53,9 @@ public class Address {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="ADDRESSES_GEN",sequenceName="ADDRESSES_SEQ", initialValue=10000, allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="ADDRESSES_GEN")
+    //@GeneratedValue(strategy = GenerationType.AUTO)
     //@Column(name = "id", nullable = false)
     public Long getId() {
         return id;

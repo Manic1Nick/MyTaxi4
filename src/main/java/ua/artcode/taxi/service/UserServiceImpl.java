@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<Long, Double> createMapOrdersIdDistancesKmToUser(List<Order> orders)
-            throws InputDataWrongException, IOException {
+            throws InputDataWrongException, IOException { //only for driver
 
         Location locationDriver = googleMapsAPI.getCurrentLocation();
 
@@ -189,7 +189,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateCurrentAddressOfUser(User user) throws IOException, InputDataWrongException {
+    public User updateCurrentAddressOfUser(User user)
+            throws IOException, InputDataWrongException, NullPointerException {
 
         Location currentLocation = googleMapsAPI.getCurrentLocation();
         Address currentAddress = getAddressFromLocation(currentLocation);

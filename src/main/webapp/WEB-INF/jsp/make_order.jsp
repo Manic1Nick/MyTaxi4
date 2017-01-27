@@ -122,36 +122,19 @@
         }
     </script>
 
-    <%--MENU--%>
-
-    <%--LOGOUT--%>
-    <script>
-        function logout() {
-            $("#logout").modal('show');
-        }
-    </script>
-    <div class="modal fade" id="logout" role="dialog">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Are you sure to exit?</h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                            onclick="document.forms['logoutForm'].submit()">Confirm</button>
-                </div>
-            </div>
+    <%--open alert if currect location is null--%>
+    <c:if test="${user.currentAddress == null}">
+        <div class="alert alert-warning">
+            <h4><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Unfortunately current address is not determined</strong></h4>
         </div>
-    </div>
+    </c:if>
+
+    <%--MENU--%>
     <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
     </form>
-    <form id="logoutForm" method="POST" action="${contextPath}/logout">
-       <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-    </form>
-    <h4><a onclick="logout()">Logout</a> |
-        <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
+    <h4><a onclick="document.forms['gomenuForm'].submit()">Return to menu</a></h4>
 
     <%--MODAL calculate distance & price--%>
         <div class="modal fade" id="calculateInModal" role="dialog">
@@ -181,8 +164,10 @@
                 <h4>Enter address FROM<span class="caret"></span></h4>
             </button>
             <ul class="dropdown-menu">
-                <h4><li><a onclick="fromCurrentLocation()">Use your current location</a></li></h4>
-                <h4><li><a onclick="fromHomeAddress()">Use your home address</a></li></h4>
+                <c:if test="${user.currentAddress != null}">
+                    <h4><li><a onclick="fromCurrentLocation()">Use your current location</a></li></h4>
+                </c:if>
+                    <h4><li><a onclick="fromHomeAddress()">Use your home address</a></li></h4>
                 <c:if test="${lastOrder != null}">
                     <h4><li><a onclick="fromLastOrder()">Use your last order</a></li></h4>
                 </c:if>
@@ -229,8 +214,10 @@
                 <h4>Enter address TO<span class="caret"></span></h4>
             </button>
             <ul class="dropdown-menu">
-                <h4><li><a onclick="toCurrentLocation()">Use your current location</a></li></h4>
-                <h4><li><a onclick="toHomeAddress()">Use your home address</a></li></h4>
+                <c:if test="${user.currentAddress != null}">
+                    <h4><li><a onclick="toCurrentLocation()">Use your current location</a></li></h4>
+                </c:if>
+                    <h4><li><a onclick="toHomeAddress()">Use your home address</a></li></h4>
                 <c:if test="${lastOrder != null}">
                     <h4><li><a onclick="toLastOrder()">Use your last order</a></li></h4>
                 </c:if>

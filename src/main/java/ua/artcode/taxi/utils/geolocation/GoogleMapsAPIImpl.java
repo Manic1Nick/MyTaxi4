@@ -37,10 +37,11 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
     public static final String DATA_IP_FILE =
             "/home/jessy/IdeaProjects/_DataForProjects/GeoLiteCity.dat";
 
-    public static final String URL_FOR_SEARCH_CURRENT_IP =
-            "http://checkip.amazonaws.com";
-
-
+    public static final String[] URLS_FOR_SEARCH_CURRENT_IP = {
+            "http://checkip.amazonaws.com",
+            "http://myip.dnsomatic.com/",
+            "http://icanhazip.com/"
+    };
 
     @Override
     public Location findLocation(String unformatted) throws InputDataWrongException {
@@ -163,17 +164,23 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
         }
     }
 
-    public Location getCurrentLocation() throws IOException, InputDataWrongException {
-
-        URL whatismyip = new URL(URL_FOR_SEARCH_CURRENT_IP);
-        BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
-
-        String ip = in.readLine();
+    public Location getCurrentLocation()
+            throws IOException, InputDataWrongException, NullPointerException {
 
         LookupService cl = new LookupService(DATA_IP_FILE,
                 LookupService.GEOIP_MEMORY_CACHE | LookupService.GEOIP_CHECK_CACHE);
+        com.maxmind.geoip.Location geoLocation = null;
 
-        com.maxmind.geoip.Location geoLocation = cl.getLocation(ip);
+        int i = 0;
+        while (geoLocation == null && i < URLS_FOR_SEARCH_CURRENT_IP.length) {
+            URL whatismyip = new URL(URLS_FOR_SEARCH_CURRENT_IP[i++]);
+            BufferedReader in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+            String ip = in.readLine();
+            geoLocation = cl.getLocation(ip);
+        }
+
+        if (geoLocation == null)
+            throw new NullPointerException("Incorrect current ip address");
 
         Float lat = geoLocation.latitude;
         Float lng = geoLocation.longitude;

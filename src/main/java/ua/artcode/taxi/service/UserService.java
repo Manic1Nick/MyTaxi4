@@ -21,7 +21,8 @@ public interface UserService {
     User getById(Long id);
     //User updateUser(Long id, User newUser);
 
-    User updateCurrentAddressOfUser(User user) throws IOException, InputDataWrongException;
+    User updateCurrentAddressOfUser(User user)
+            throws IOException, InputDataWrongException, NullPointerException;
 
     Order getLastOrder(String userphone);
     Order getOrderById(Long id);

@@ -32,42 +32,23 @@
 <body>
 <div class="container">
 
-    <%--LOGOUT--%>
-    <script>
-        function logout() {
-            $("#logout").modal('show');
-        }
-    </script>
-    <div class="modal fade" id="logout" role="dialog">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Are you sure to exit?</h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                            onclick="document.forms['logoutForm'].submit()">Confirm</button>
-                </div>
-            </div>
+    <%--open alert if currect location is null--%>
+    <c:if test="${driver != null && driver.currentAddress == null}">
+        <div class="alert alert-warning">
+            <h4><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Unfortunately current address of your driver is not determined</strong></h4>
         </div>
-    </div>
+    </c:if>
 
     <c:if test="${order != null}">
 
         <div id="menu" class="container">
                 <%--MENU--%>
-            <form id="logoutForm" method="POST" action="${contextPath}/logout">
-                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-            </form>
             <form id="gomenuForm" method="GET" action="${contextPath}/welcome">
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
 
             <h4>
-                    <%--LOGOUT--%>
-                <a onclick="logout()">Logout</a> |
-
                     <%--RETURN TO MENU--%>
                 <a onclick="document.forms['gomenuForm'].submit()">Return to menu</a> |
 

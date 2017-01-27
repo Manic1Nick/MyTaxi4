@@ -14,6 +14,6 @@ public interface GoogleMapsAPI {
 
     double getDistance(Location pointA, Location pointB) throws InputDataWrongException;
 
-    Location getCurrentLocation() throws IOException, InputDataWrongException;
+    Location getCurrentLocation() throws IOException, InputDataWrongException, NullPointerException;
 
 }

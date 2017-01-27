@@ -25,7 +25,8 @@ public class Car {
     }
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name="CARS_GEN",sequenceName="CARS_SEQ", initialValue=10000, allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="CARS_GEN")
     public Long getId() {
         return id;
     }
