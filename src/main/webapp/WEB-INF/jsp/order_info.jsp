@@ -33,7 +33,7 @@
 <div class="container">
 
     <%--open alert if currect location is null--%>
-    <c:if test="${driver != null && driver.currentAddress == null}">
+    <c:if test="${currentUser.car != null && driver != null && driver.currentAddress == null}">
         <div class="alert alert-warning">
             <h4><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                 <strong>Unfortunately current address of your driver is not determined</strong></h4>
