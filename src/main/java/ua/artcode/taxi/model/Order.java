@@ -39,8 +39,8 @@ public class Order {
     }
 
     @Id
-    @SequenceGenerator(name="ORDERS_GEN",sequenceName="ORDERS_SEQ", initialValue=10000, allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="ORDERS_GEN")
+    @SequenceGenerator(name="ORDERS_SEQ_GEN",sequenceName="ORDERS_SEQ", initialValue=1, allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="ORDERS_SEQ_GEN")
     public Long getId() {
         return id;
     }

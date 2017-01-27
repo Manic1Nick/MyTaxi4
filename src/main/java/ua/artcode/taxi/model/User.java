@@ -44,8 +44,8 @@ public class User {
     }
 
     @Id
-    @SequenceGenerator(name="USERS_GEN",sequenceName="USERS_SEQ", initialValue=10000, allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="USERS_GEN")
+    @SequenceGenerator(name="USERS_SEQ_GEN",sequenceName="USERS_SEQ", initialValue=1, allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="USERS_SEQ_GEN")
     public Long getId() {
         return id;
     }

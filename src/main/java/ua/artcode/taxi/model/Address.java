@@ -53,8 +53,8 @@ public class Address {
     }
 
     @Id
-    @SequenceGenerator(name="ADDRESSES_GEN",sequenceName="ADDRESSES_SEQ", initialValue=10000, allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="ADDRESSES_GEN")
+    @SequenceGenerator(name="ADDRESSES_SEQ_GEN",sequenceName="ADDRESSES_SEQ", initialValue=1, allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="ADDRESSES_SEQ_GEN")
     //@GeneratedValue(strategy = GenerationType.AUTO)
     //@Column(name = "id", nullable = false)
     public Long getId() {
