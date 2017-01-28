@@ -1133,3 +1133,51 @@ Caused by: org.postgresql.util.PSQLException: ERROR: relation "hibernate_sequenc
 2017-01-28 17:15:00 WARN  SqlExceptionHelper:129 - SQL Error: 0, SQLState: 23502
 2017-01-28 17:15:00 ERROR SqlExceptionHelper:131 - ERROR: null value in column "id" violates not-null constraint
   Подробности: Failing row contains (null, f, null, $2a$11$OICNqp4Wbq9PAXIYC6tiQOPR6pB8b3v5KpGfAB8dpedThOoRxi9Zm, 0, Oleg, +380001231214, null, 20).
+2017-01-28 17:34:44 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2017-01-28 17:34:45 INFO  Version:37 - HHH000412: Hibernate Core {5.1.0.Final}
+2017-01-28 17:34:45 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2017-01-28 17:34:45 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2017-01-28 17:34:45 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2017-01-28 17:34:45 WARN  JdbcEnvironmentInitiator:132 - HHH000342: Could not obtain connection to query metadata : Cannot create PoolableConnectionFactory (FATAL: database "accounts" does not exist)
+2017-01-28 17:34:45 INFO  Dialect:156 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
+2017-01-28 17:34:45 INFO  LobCreatorBuilderImpl:63 - HHH000422: Disabling contextual LOB creation as connection was null
+2017-01-28 17:34:45 INFO  BasicTypeRegistry:138 - HHH000270: Type registration [java.util.UUID] overrides previous : org.hibernate.type.UUIDBinaryType@1242960
+2017-01-28 17:34:46 INFO  Version:30 - HV000001: Hibernate Validator 5.3.1.Final
+2017-01-28 17:36:17 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2017-01-28 17:36:17 INFO  Version:37 - HHH000412: Hibernate Core {5.1.0.Final}
+2017-01-28 17:36:17 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2017-01-28 17:36:17 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2017-01-28 17:36:17 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2017-01-28 17:36:18 WARN  JdbcEnvironmentInitiator:132 - HHH000342: Could not obtain connection to query metadata : Cannot create PoolableConnectionFactory (FATAL: database "accounts" does not exist)
+2017-01-28 17:36:18 INFO  Dialect:156 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
+2017-01-28 17:36:18 INFO  LobCreatorBuilderImpl:63 - HHH000422: Disabling contextual LOB creation as connection was null
+2017-01-28 17:36:18 INFO  BasicTypeRegistry:138 - HHH000270: Type registration [java.util.UUID] overrides previous : org.hibernate.type.UUIDBinaryType@1242960
+2017-01-28 17:36:18 INFO  Version:30 - HV000001: Hibernate Validator 5.3.1.Final
+2017-01-28 17:38:11 INFO  LogHelper:31 - HHH000204: Processing PersistenceUnitInfo [
+	name: default
+	...]
+2017-01-28 17:38:12 INFO  Version:37 - HHH000412: Hibernate Core {5.1.0.Final}
+2017-01-28 17:38:12 INFO  Environment:213 - HHH000206: hibernate.properties not found
+2017-01-28 17:38:12 INFO  Environment:317 - HHH000021: Bytecode provider name : javassist
+2017-01-28 17:38:12 INFO  Version:66 - HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+2017-01-28 17:38:12 INFO  Dialect:156 - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
+2017-01-28 17:38:12 INFO  LobCreatorBuilderImpl:124 - HHH000424: Disabling contextual LOB creation as createClob() method threw error : java.lang.reflect.InvocationTargetException
+2017-01-28 17:38:12 INFO  BasicTypeRegistry:138 - HHH000270: Type registration [java.util.UUID] overrides previous : org.hibernate.type.UUIDBinaryType@70d56e
+2017-01-28 17:38:13 INFO  Version:30 - HV000001: Hibernate Validator 5.3.1.Final
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: addresses
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: addresses
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: cars
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: cars
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: orders
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: orders
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: role
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: role
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: user_role
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: user_role
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: users
+2017-01-28 17:38:14 INFO  InformationExtractorJdbcDatabaseMetaDataImpl:365 - HHH000262: Table not found: users
+2017-01-28 17:38:47 INFO  QueryTranslatorFactoryInitiator:47 - HHH000397: Using ASTQueryTranslatorFactory
