@@ -8,10 +8,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import ua.artcode.taxi.exception.InputDataWrongException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -35,7 +32,7 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
             "AIzaSyD-KmQUcMJUpRzjthK1CvNtmYw3mLf9vzs";
 
     public static final String DATA_IP_FILE =
-            "/home/jessy/IdeaProjects/_DataForProjects/GeoLiteCity.dat";
+            "resources/GeoLiteCity.dat";
 
     public static final String[] URLS_FOR_SEARCH_CURRENT_IP = {
             "http://checkip.amazonaws.com",
@@ -167,7 +164,7 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
     public Location getCurrentLocation()
             throws IOException, InputDataWrongException, NullPointerException {
 
-        LookupService cl = new LookupService(DATA_IP_FILE,
+        LookupService cl = new LookupService(new File(DATA_IP_FILE),
                 LookupService.GEOIP_MEMORY_CACHE | LookupService.GEOIP_CHECK_CACHE);
         com.maxmind.geoip.Location geoLocation = null;
 
@@ -186,5 +183,9 @@ public class GoogleMapsAPIImpl implements GoogleMapsAPI {
         Float lng = geoLocation.longitude;
 
         return findPlaceID(new Location(lat, lng));
+    }
+
+    public static void main(String[] args) {
+
     }
 }
